@@ -22,12 +22,11 @@ typedef struct _LTexture       //텍스쳐 구조체
 	SDL_Texture* mTexture;
 	int mWidth;
 	int mHeight;
-
 }_LTexture;
 
 struct _LTexture gBackgroundTexture;
 struct _LTexture gMainplayerTexture;
-struct _LTexture gDuckTexture;
+struct _LTexture gDuckTexture;	
 
 bool init(); //초기화
 bool loadMedia(); //미디어 로딩

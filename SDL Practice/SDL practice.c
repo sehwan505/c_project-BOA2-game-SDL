@@ -1,4 +1,4 @@
-#include <SDL.h> //SDL lib
+Z#include <SDL.h> //SDL lib
 #include <stdio.h> 
 
 //스크린 사이즈 정의
