@@ -10,7 +10,6 @@
 #include "timer.h"
 
 
-
 bool init()
 {
 	bool Sflag = true; //success flag
@@ -67,17 +66,36 @@ bool init()
 
 	gPlayer.Player_HEIGHT = 78;
 	gPlayer.Player_WIDTH = 78;
-	gPlayer.Player_VEL = 2;
+	gPlayer.Player_VEL = 5;
 
 	//기본 플레이어 위치 설정
 	gPlayer.mBox.x = 0;
 	gPlayer.mBox.y = 0;
 	gPlayer.mBox.w = gPlayer.Player_WIDTH;
 	gPlayer.mBox.h = gPlayer.Player_HEIGHT;
-
 	gPlayer.mVelX = 0;
 	gPlayer.mVelY = 0;
 
+	//오리 변수 초기화
+	for (int i = 0; i < 5; i++)
+	{
+		gDuck[i].Player_HEIGHT = 78;
+		gDuck[i].Player_WIDTH = 78;
+		gDuck[i].Player_VEL = 3;
+		gDuck[i].mBox.w = gDuck[i].Player_WIDTH;
+		gDuck[i].mBox.h = gDuck[i].Player_HEIGHT;
+		gDuck[i].mVelX = 0;
+		gDuck[i].mVelY = 0;
+	}
+	//기본 오리 위치 설정
+	for (int i = 0; i < 5; i++)
+	{
+		int ranX = rand() % LEVEL_WIDTH;
+		int ranY = rand() % LEVEL_HEIGHT;
+		gDuck[i].mBox.x = ranX;
+		gDuck[i].mBox.y = ranY;
+	}
+	
 
 	timer.mStartTicks = 0;
 	timer.mPauseTicks = 0;
@@ -159,14 +177,69 @@ bool loadMedia(_LTile *tiles[])
 		printf("메인플레이어 디폴트 텍스쳐(insane) 로드 실패!\n");
 		Sflag = false;
 	}
-
-
-	loadFromFile(&gDuckTexture, gRenderer, "images/duck_front.png");
-	if (gDuckTexture.mTexture == NULL)
+	loadFromFile(&gMainplayerTexture[6], gRenderer, "images/player_left02.png");
+	if (gMainplayerTexture[6].mTexture == NULL)
 	{
-		printf("오리 로드 실패!\n");
+		printf("메인플레이어 디폴트 텍스쳐(left02) 로드 실패!\n");
 		Sflag = false;
 	}
+	loadFromFile(&gMainplayerTexture[7], gRenderer, "images/player_right02.png");
+	if (gMainplayerTexture[7].mTexture == NULL)
+	{
+		printf("메인플레이어 디폴트 텍스쳐(right02) 로드 실패!\n");
+		Sflag = false;
+	}
+
+
+	loadFromFile(&gDuckTexture[0], gRenderer, "images/duck_front.png");
+	if (gDuckTexture[0].mTexture == NULL)
+	{
+		printf("오리(디폴트) 로드 실패!\n");
+		Sflag = false;
+	}
+	loadFromFile(&gDuckTexture[1], gRenderer, "images/duck_back.png");
+	if (gDuckTexture[1].mTexture == NULL)
+	{
+		printf("오리(뒤) 로드 실패!\n");
+		Sflag = false;
+	}
+	loadFromFile(&gDuckTexture[2], gRenderer, "images/duck_front.png");
+	if (gDuckTexture[2].mTexture == NULL)
+	{
+		printf("오리(앞) 로드 실패!\n");
+		Sflag = false;
+	}
+	loadFromFile(&gDuckTexture[3], gRenderer, "images/duck_left.png");
+	if (gDuckTexture[3].mTexture == NULL)
+	{
+		printf("오리(left) 로드 실패!\n");
+		Sflag = false;
+	}
+	loadFromFile(&gDuckTexture[4], gRenderer, "images/duck_right.png");
+	if (gDuckTexture[4].mTexture == NULL)
+	{
+		printf("오리(right) 로드 실패!\n");
+		Sflag = false;
+	}
+	loadFromFile(&gDuckTexture[5], gRenderer, "images/duck_insane.png");
+	if (gDuckTexture[5].mTexture == NULL)
+	{
+		printf("오리(insane) 로드 실패!\n");
+		Sflag = false;
+	}
+	loadFromFile(&gDuckTexture[6], gRenderer, "images/duck_left.png");
+	if (gDuckTexture[6].mTexture == NULL)
+	{
+		printf("오리(left02) 로드 실패!\n");
+		Sflag = false;
+	}
+	loadFromFile(&gDuckTexture[7], gRenderer, "images/duck_right.png");
+	if (gDuckTexture[7].mTexture == NULL)
+	{
+		printf("오리(right02) 로드 실패!\n");
+		Sflag = false;
+	}
+
 
 	loadFromFile(&gSightLimiter, gRenderer, "images/SightLimiter.png");
 	if (gSightLimiter.mTexture == NULL)
@@ -219,6 +292,7 @@ bool loadMedia(_LTile *tiles[])
 		}
 
 	}
+	//타일 텍스쳐 오픈
 	loadFromFile(&gTileTexture[0], gRenderer, "images/tile00.png");
 	loadFromFile(&gTileTexture[1], gRenderer, "images/tile01.png");
 	loadFromFile(&gTileTexture[2], gRenderer, "images/tile02.png");
@@ -258,6 +332,8 @@ void close()
 	SDL_DestroyTexture(gLetterbox);
 	gLetterbox = NULL;
 
+	for (enum KeyPressSurfaces i = KEY_PRESS_SURFACE_DEFAULT; i < KEY_PRESS_SURFACE_TOTAL+2; i++)
+		lfree(&gMainplayerTexture[i]);
 	for (enum KeyPressSurfaces i = KEY_PRESS_SURFACE_DEFAULT; i < KEY_PRESS_SURFACE_TOTAL; i++)
 		lfree(&gMainplayerTexture[i]);
 	for (int i = 0; i < 12; i++)
@@ -378,7 +454,29 @@ void V_handleEvent(_LPlayer* LP, SDL_Event* e) //키입력에 따른 좌표조절
 		}
 	}
 }
-
+void reverse_V_handleEvent(_LPlayer* LP, SDL_Event* e) //키입력에 따른 좌표조절
+{
+	if (e->type == SDL_KEYDOWN && e->key.repeat == 0)
+	{
+		switch (e->key.keysym.sym)
+		{
+		case SDLK_UP: LP->mVelY += LP->Player_VEL; break;
+		case SDLK_DOWN: LP->mVelY -= LP->Player_VEL; break;
+		case SDLK_LEFT: LP->mVelX += LP->Player_VEL; break;
+		case SDLK_RIGHT: LP->mVelX -= LP->Player_VEL; break;
+		}
+	}
+	else if (e->type == SDL_KEYUP && e->key.repeat == 0)
+	{
+		switch (e->key.keysym.sym)
+		{
+		case SDLK_UP: LP->mVelY -= LP->Player_VEL; break;
+		case SDLK_DOWN: LP->mVelY += LP->Player_VEL; break;
+		case SDLK_LEFT: LP->mVelX -= LP->Player_VEL; break;
+		case SDLK_RIGHT: LP->mVelX += LP->Player_VEL; break;
+		}
+	}
+}
 void move(_LPlayer* LP, _LTile *tiles) //플레이어 무브 & 충돌처리
 {
 	LP->mBox.x += LP->mVelX;
@@ -419,10 +517,11 @@ void setCamera(_LPlayer* LP, SDL_Rect* camera)
 	}
 }
 
-void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e)
+void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time)
 {
 	if (e->type == SDL_KEYDOWN)
 	{
+		
 		switch (e->key.keysym.sym)
 		{
 		case SDLK_UP:
@@ -436,14 +535,32 @@ void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e)
 			CT->mTexture = (LT + KEY_PRESS_SURFACE_DOWN)->mTexture;
 			break;
 		case SDLK_LEFT:
-			CT->mHeight = (LT + KEY_PRESS_SURFACE_LEFT)->mHeight;
-			CT->mTexture = (LT + KEY_PRESS_SURFACE_LEFT)->mTexture;
-			CT->mWidth = (LT + KEY_PRESS_SURFACE_LEFT)->mWidth;
+			if (time % 2 == 0)
+			{
+				CT->mHeight = (LT + KEY_PRESS_SURFACE_LEFT)->mHeight;
+				CT->mTexture = (LT + KEY_PRESS_SURFACE_LEFT)->mTexture;
+				CT->mWidth = (LT + KEY_PRESS_SURFACE_LEFT)->mWidth;
+			}
+			else
+			{
+				CT->mHeight = (LT + 6)->mHeight;
+				CT->mTexture = (LT + 6)->mTexture;
+				CT->mWidth = (LT + 6)->mWidth;
+			}
 			break;
 		case SDLK_RIGHT:
-			CT->mHeight = (LT + KEY_PRESS_SURFACE_RIGHT)->mHeight;
-			CT->mTexture = (LT + KEY_PRESS_SURFACE_RIGHT)->mTexture;
-			CT->mWidth = (LT + KEY_PRESS_SURFACE_RIGHT)->mWidth;
+			if (time % 2 == 0)
+			{
+				CT->mHeight = (LT + KEY_PRESS_SURFACE_RIGHT)->mHeight;
+				CT->mTexture = (LT + KEY_PRESS_SURFACE_RIGHT)->mTexture;
+				CT->mWidth = (LT + KEY_PRESS_SURFACE_RIGHT)->mWidth;
+			}
+			else
+			{
+				CT->mHeight = (LT + 7)->mHeight;
+				CT->mTexture = (LT + 7)->mTexture;
+				CT->mWidth = (LT + 7)->mWidth;
+			}
 			break;
 		case SDLK_o:
 			CT->mHeight = (LT + KEY_PRESS_SURFACE_O)->mHeight;
@@ -456,6 +573,66 @@ void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e)
 			CT->mTexture = (LT + KEY_PRESS_SURFACE_DEFAULT)->mTexture;
 			break;
 		}
+		
+	}
+}
+void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
+{
+	if (e->type == SDL_KEYDOWN)
+	{
+
+		switch (e->key.keysym.sym)
+		{
+		case SDLK_UP:
+			CT->mTexture = (LT + KEY_PRESS_SURFACE_DOWN)->mTexture;
+			CT->mWidth = (LT + KEY_PRESS_SURFACE_DOWN)->mWidth;
+			CT->mHeight = (LT + KEY_PRESS_SURFACE_DOWN)->mHeight;
+			break;
+		case SDLK_DOWN:
+			CT->mHeight = (LT + KEY_PRESS_SURFACE_UP)->mHeight;
+			CT->mWidth = (LT + KEY_PRESS_SURFACE_UP)->mWidth;
+			CT->mTexture = (LT + KEY_PRESS_SURFACE_UP)->mTexture;
+			break;
+		case SDLK_LEFT:
+			if (time % 2 == 0)
+			{
+				CT->mHeight = (LT + KEY_PRESS_SURFACE_RIGHT)->mHeight;
+				CT->mTexture = (LT + KEY_PRESS_SURFACE_RIGHT)->mTexture;
+				CT->mWidth = (LT + KEY_PRESS_SURFACE_RIGHT)->mWidth;
+			}
+			else
+			{
+				CT->mHeight = (LT + 7)->mHeight;
+				CT->mTexture = (LT + 7)->mTexture;
+				CT->mWidth = (LT + 7)->mWidth;
+			}
+			break;
+		case SDLK_RIGHT:
+			if (time % 2 == 0)
+			{
+				CT->mHeight = (LT + KEY_PRESS_SURFACE_LEFT)->mHeight;
+				CT->mTexture = (LT + KEY_PRESS_SURFACE_LEFT)->mTexture;
+				CT->mWidth = (LT + KEY_PRESS_SURFACE_LEFT)->mWidth;
+			}
+			else
+			{
+				CT->mHeight = (LT + 6)->mHeight;
+				CT->mTexture = (LT + 6)->mTexture;
+				CT->mWidth = (LT + 6)->mWidth;
+			}
+			break;
+		case SDLK_o:
+			CT->mHeight = (LT + KEY_PRESS_SURFACE_O)->mHeight;
+			CT->mWidth = (LT + KEY_PRESS_SURFACE_O)->mWidth;
+			CT->mTexture = (LT + KEY_PRESS_SURFACE_O)->mTexture;
+			break;
+		default:
+			CT->mHeight = (LT + KEY_PRESS_SURFACE_DEFAULT)->mHeight;
+			CT->mWidth = (LT + KEY_PRESS_SURFACE_DEFAULT)->mWidth;
+			CT->mTexture = (LT + KEY_PRESS_SURFACE_DEFAULT)->mTexture;
+			break;
+		}
+
 	}
 }
 bool checkCollision(SDL_Rect a, SDL_Rect b) //충돌판정 함수(충돌-> return false)

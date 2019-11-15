@@ -61,8 +61,9 @@ const int TOTAL_TILES = 763;
 const int TOTAL_TILE_SPRITES = 12;
 
 //텍스쳐 등 구현할 구조체들 정의
-struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL]; //메인캐릭터 텍스쳐
-struct _LTexture gDuckTexture;
+struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL+2]; //메인캐릭터 텍스쳐
+struct _LTexture gDuckTexture[KEY_PRESS_SURFACE_TOTAL+2];
+struct _LTexture gCurrentDuck;
 struct _LTexture gTimeText;
 struct _LTexture gCurrentTime;
 struct _LTexture gSightLimiter;   //시야 가리기
@@ -71,11 +72,13 @@ struct _LTexture gCurrentSurface; //현재 표시되는 서피스
 struct _LTexture gCurrentText;    //현재 표시되는 텍스트
 struct _LTexture gTileTexture[12];//타일셋 텍스처
 struct _LPlayer gPlayer;
+struct _LPlayer gDuck[5];
 struct _LTimer timer;
 
 
 int main()
 {
+	srand(time(NULL));
 	//SDL 모듈 초기화
 	if (!init())
 	{
@@ -177,7 +180,10 @@ int main()
 					}
 						
 					V_handleEvent(&gPlayer, &e); //키다운에 따른 이동 이벤트
-					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e);  //왜 에러나지
+					for (int i =0;i<5;i++)
+						reverse_V_handleEvent(&gDuck[i], &e);
+					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks() / 350);  //키다운에 따른 텍스쳐 변경
+					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, SDL_GetTicks() / 350);
 				}
 
 				float avgFPS = countedFrames / (getTicks(&fpsTimer) / (float)1000);
@@ -189,14 +195,19 @@ int main()
 			
 
 				
-				//시간 표시를 위한 변수 설정 (추가: 실시간으로 1씩증가하게 만들어야함)
+				//시간 표시를 위한 변수 설정
 				SDL_Color timeColor = { 255,255,255 };
-				int Ctime = SDL_GetTicks() / 1000;
+				int Ctime = 150 - SDL_GetTicks() / 1000;
 				sprintf(time, "%d", Ctime);
 				
 				if (!loadFromRenderedText(&gCurrentTime, gRenderer, gFont,time, timeColor))
 				{
 					printf("메인 타이머를 랜더할 수 없습니다! \n");
+				}
+				if (Ctime <= 0) //남은 시간이 0이하일때 종료
+				{
+					printf("타임오버!\n");
+					quit = true;
 				}
 				
 
@@ -206,7 +217,17 @@ int main()
 
 				//캐릭터 이동 & 카메라 셋팅
 				move(&gPlayer,&tileSet);
+				for (int i = 0; i < 5; i++)
+				{
+					move(&gDuck[i], &tileSet);
+					if (checkCollision(gPlayer.mBox, (gDuck+i)->mBox))
+					{
+						quit = true;
+					}
+				}
 				setCamera(&gPlayer, &Camera);
+
+				
 				
 
 				SDL_Rect botLeftViewport; //로그박스 뷰포트
@@ -217,6 +238,8 @@ int main()
 				SDL_RenderSetViewport(gRenderer, &botLeftViewport);
 
 				SDL_RenderCopy(gRenderer, gLetterbox, NULL, NULL);
+
+				//랜더(타이머, 텍스트)
 				render(&gTimeText, gRenderer, 30, 30);
 				render(&gCurrentTime, gRenderer, 130, 30);
 				render(&gCurrentText, gRenderer, 30, 60);
@@ -231,7 +254,7 @@ int main()
 				SDL_RenderSetViewport(gRenderer, &botRightViewport);
 
 				SDL_RenderCopy(gRenderer, gMinimap, NULL, NULL);
-
+				
 
 
 				SDL_Rect topViewport;
@@ -253,14 +276,15 @@ int main()
 				}
 				
 				//!!!랜더링 순서 중요함!!! 
-				render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1310 - Camera.x, gPlayer.mBox.y - 730 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
+				for(int i=0;i<5;i++)
+					render(&gCurrentDuck, gRenderer, gDuck[i].mBox.x - Camera.x, gDuck[i].mBox.y - Camera.y);
+				//render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1310 - Camera.x, gPlayer.mBox.y - 730 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
 				render(&gCurrentSurface, gRenderer, gPlayer.mBox.x - Camera.x, gPlayer.mBox.y - Camera.y); //플레이어 무브
-
-				//render(&gTimeText, gRenderer, 1, 1); //타이머
+				
 				SDL_RenderPresent(gRenderer);  //Update
 				++countedFrames;
 
-				//free(timeText);
+				
 
 				int frameTicks = getTicks(&capTimer);
 				if (frameTicks < SCREEN_TICK_PER_FRAME)

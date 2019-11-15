@@ -61,9 +61,10 @@ extern const int TOTAL_TILES;
 extern const int TOTAL_TILE_SPRITES;
 
 //텍스쳐 등 구현할 구조체들 정의
-extern struct _LTexture gBackgroundTexture;
-extern struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL]; //메인캐릭터 텍스쳐
-extern struct _LTexture gDuckTexture;
+
+extern struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL+2]; //메인캐릭터 텍스쳐
+extern struct _LTexture gDuckTexture[KEY_PRESS_SURFACE_TOTAL+2];
+extern struct _LTexture gCurrentDuck;
 extern struct _LTexture gTimeText;
 extern struct _LTexture gCurrentTime;
 extern struct _LTexture gSightLimiter;   //시야 가리기
@@ -72,6 +73,7 @@ extern struct _LTexture gCurrentSurface; //현재 표시되는 서피스
 extern struct _LTexture gCurrentText;    //현재 표시되는 텍스트
 extern struct _LTexture gTileTexture[12];//타일셋 텍스처
 extern struct _LPlayer gPlayer;
+extern struct _LPlayer gDuck[5];
 extern struct _LTimer timer;
 
 
@@ -84,7 +86,9 @@ void lfree(_LTexture*); //닫기
 void render(_LTexture* , SDL_Renderer*, int , int ); //지정된 좌표에 랜더링
 bool loadFromRenderedText(_LTexture*, SDL_Renderer* , TTF_Font*, char* , SDL_Color); //텍스트 불러오기
 void V_handleEvent(_LPlayer*, SDL_Event*);  //이벤트에 따른 속도조절
-void T_handleEvent(_LTexture* , _LTexture* , SDL_Event* ); //이벤트에 따른 텍스쳐 조절
+void reverse_V_handleEvent(_LPlayer*, SDL_Event*);  //이벤트에 따른 속도조절
+void T_handleEvent(_LTexture* , _LTexture* , SDL_Event*,int ); //이벤트에 따른 텍스쳐 조절
+void reverse_T_handleEvent(_LTexture*, _LTexture*, SDL_Event*, int); //이벤트에 따른 텍스쳐 조절
 bool setTiles(_LTile *);
 bool touchesWall(SDL_Rect , _LTile* );
 
