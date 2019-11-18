@@ -86,16 +86,9 @@ bool init()
 		gDuck[i].mBox.h = gDuck[i].Player_HEIGHT;
 		gDuck[i].mVelX = 0;
 		gDuck[i].mVelY = 0;
+		gDuck[i].mBox.x = 0;
+		gDuck[i].mBox.y = 0;
 	}
-	//기본 오리 위치 설정
-	for (int i = 0; i < 5; i++)
-	{
-		int ranX = rand() % LEVEL_WIDTH;
-		int ranY = rand() % LEVEL_HEIGHT;
-		gDuck[i].mBox.x = ranX;
-		gDuck[i].mBox.y = ranY;
-	}
-	
 
 	timer.mStartTicks = 0;
 	timer.mPauseTicks = 0;
@@ -516,7 +509,6 @@ void setCamera(_LPlayer* LP, SDL_Rect* camera)
 		camera->y = LEVEL_HEIGHT - camera->h;
 	}
 }
-
 void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time)
 {
 	if (e->type == SDL_KEYDOWN)
@@ -797,7 +789,6 @@ bool setTiles(_LTile *tiles)
 	fclose(fp);
 	return loaded;
 }
-
 bool touchesWall(SDL_Rect box, _LTile* tiles)
 {
 	for (int i = 0; i < TOTAL_TILES; i++)
