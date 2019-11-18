@@ -118,6 +118,20 @@ int main()
 			gCurrentText.mHeight = gTextTexture[0].mHeight;
 			gCurrentText.mWidth = gTextTexture[0].mWidth;
 
+			//기본 오리 위치 설정
+			for (int i = 0; i < 5; i++)
+			{
+				do {
+					
+					int ranX = rand() % LEVEL_WIDTH;
+					int ranY = rand() % LEVEL_HEIGHT;
+					gDuck[i].mBox.x = ranX;
+					gDuck[i].mBox.y = ranY;
+					
+				} while (touchesWall(gDuck[i].mBox, tileSet));
+			}
+
+			
 			
 			//fps제어용 & 게임타이머용 타이머 구조체 선언
 			struct _LTimer fpsTimer;
@@ -290,7 +304,7 @@ int main()
 				if (frameTicks < SCREEN_TICK_PER_FRAME)
 				{
 					SDL_Delay(SCREEN_TICK_PER_FRAME - frameTicks);
-				}
+				}//초당 60프레임 이상 랜더 방지
 
 			}
 		}
