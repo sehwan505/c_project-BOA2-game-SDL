@@ -1,0 +1,29 @@
+﻿  game.c
+D:\workspace\C\TeamProject\c_project-BOA2\TP\han2unicode.h(1142,46): warning C4244: 'return': 'long'에서 'unsigned short'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(134,1): warning C4028: 정식 매개 변수 1이(가) 선언과 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(320,21): warning C4047: '함수': '_LTile *'의 간접 참조 수준이 '_LTile **'과(와) 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(320,21): warning C4024: 'setTiles': 형식 및 실제 매개 변수 1의 형식이 서로 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(345,14): warning C4047: '함수': '_LTexture *'의 간접 참조 수준이 'TTF_Font **'과(와) 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(345,14): warning C4024: 'lfree': 형식 및 실제 매개 변수 1의 형식이 서로 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(698,20): warning C4013: 'strtok'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(705,26): warning C4047: '=': 'char *'의 간접 참조 수준이 'int'과(와) 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(721,15): warning C4013: 'strcmp'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(694,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : 'fopen' 선언을 참조하십시오.
+  main.c
+D:\workspace\C\TeamProject\c_project-BOA2\TP\game.c(698,1): warning C4047: '초기화 중': 'char *'의 간접 참조 수준이 'int'과(와) 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(80,1): warning C4026: 정식 매개 변수 목록을 사용하여 함수를 선언했습니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(81,12): warning C4013: 'time'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(199,57): warning C4047: '함수': '_LTexture *'의 간접 참조 수준이 '_LTexture (*)[8]'과(와) 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(199,57): warning C4024: 'T_handleEvent': 형식 및 실제 매개 변수 2의 형식이 서로 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(200,56): warning C4047: '함수': '_LTexture *'의 간접 참조 수준이 '_LTexture (*)[8]'과(와) 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(200,56): warning C4024: 'reverse_T_handleEvent': 형식 및 실제 매개 변수 2의 형식이 서로 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(233,27): warning C4047: '함수': '_LTile *'의 간접 참조 수준이 '_LTile (*)[12000]'과(와) 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(233,27): warning C4024: 'move': 형식 및 실제 매개 변수 2의 형식이 서로 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(236,30): warning C4047: '함수': '_LTile *'의 간접 참조 수준이 '_LTile (*)[12000]'과(와) 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(236,30): warning C4024: 'move': 형식 및 실제 매개 변수 2의 형식이 서로 다릅니다.
+D:\workspace\C\TeamProject\c_project-BOA2\TP\main.c(215,1): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  timer.c
+  코드를 생성하고 있습니다...
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(1774): message : 'sprintf' 선언을 참조하십시오.
+  TP.vcxproj -> D:\workspace\C\TeamProject\c_project-BOA2\TP\Debug\TP.exe
