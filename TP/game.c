@@ -65,8 +65,8 @@ bool init()
 	//플레이어&타이머 변수 초기화
 
 	gPlayer.Player_HEIGHT = 78;
-	gPlayer.Player_WIDTH = 78;
-	gPlayer.Player_VEL = 5;
+	gPlayer.Player_WIDTH = 60;
+	gPlayer.Player_VEL = 3;
 
 	//기본 플레이어 위치 설정
 	gPlayer.mBox.x = 0;
@@ -79,9 +79,9 @@ bool init()
 	//오리 변수 초기화
 	for (int i = 0; i < 5; i++)
 	{
-		gDuck[i].Player_HEIGHT = 78;
-		gDuck[i].Player_WIDTH = 78;
-		gDuck[i].Player_VEL = 3;
+		gDuck[i].Player_HEIGHT = 75;
+		gDuck[i].Player_WIDTH = 75;
+		gDuck[i].Player_VEL = 2;
 		gDuck[i].mBox.w = gDuck[i].Player_WIDTH;
 		gDuck[i].mBox.h = gDuck[i].Player_HEIGHT;
 		gDuck[i].mVelX = 0;
@@ -220,13 +220,13 @@ bool loadMedia(_LTile *tiles[])
 		printf("오리(insane) 로드 실패!\n");
 		Sflag = false;
 	}
-	loadFromFile(&gDuckTexture[6], gRenderer, "images/duck_left.png");
+	loadFromFile(&gDuckTexture[6], gRenderer, "images/duck_left_02.png");
 	if (gDuckTexture[6].mTexture == NULL)
 	{
 		printf("오리(left02) 로드 실패!\n");
 		Sflag = false;
 	}
-	loadFromFile(&gDuckTexture[7], gRenderer, "images/duck_right.png");
+	loadFromFile(&gDuckTexture[7], gRenderer, "images/duck_right_02.png");
 	if (gDuckTexture[7].mTexture == NULL)
 	{
 		printf("오리(right02) 로드 실패!\n");
@@ -501,7 +501,7 @@ void move(_LPlayer* LP, _LTile *tiles) //플레이어 무브 & 충돌처리
 void setCamera(_LPlayer* LP, SDL_Rect* camera)
 {
 	camera->x = (getPosX(LP) + LP->Player_WIDTH / 2) - SCREEN_WIDTH / 2;
-	camera->y = (getPosY(LP) + LP->Player_HEIGHT / 2) - SCREEN_HEIGHT / 2;
+	camera->y = (getPosY(LP) + LP->Player_HEIGHT / 2) - (SCREEN_HEIGHT*2/3) / 2;
 
 	if (camera->x < 0)
 	{
@@ -524,7 +524,6 @@ void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time)
 {
 	if (e->type == SDL_KEYDOWN)
 	{
-		
 		switch (e->key.keysym.sym)
 		{
 		case SDLK_UP:
@@ -576,7 +575,6 @@ void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time)
 			CT->mTexture = (LT + KEY_PRESS_SURFACE_DEFAULT)->mTexture;
 			break;
 		}
-		
 	}
 }
 void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
@@ -587,9 +585,18 @@ void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
 		switch (e->key.keysym.sym)
 		{
 		case SDLK_UP:
-			CT->mTexture = (LT + KEY_PRESS_SURFACE_DOWN)->mTexture;
-			CT->mWidth = (LT + KEY_PRESS_SURFACE_DOWN)->mWidth;
-			CT->mHeight = (LT + KEY_PRESS_SURFACE_DOWN)->mHeight;
+			if ((150 - time / 1000) <= 140)
+			{
+				CT->mTexture = (LT + KEY_PRESS_SURFACE_O)->mTexture;
+				CT->mWidth = (LT + KEY_PRESS_SURFACE_O)->mWidth;
+				CT->mHeight = (LT + KEY_PRESS_SURFACE_O)->mHeight;
+			}
+			else
+			{
+				CT->mTexture = (LT + KEY_PRESS_SURFACE_DOWN)->mTexture;
+				CT->mWidth = (LT + KEY_PRESS_SURFACE_DOWN)->mWidth;
+				CT->mHeight = (LT + KEY_PRESS_SURFACE_DOWN)->mHeight;
+			}
 			break;
 		case SDLK_DOWN:
 			CT->mHeight = (LT + KEY_PRESS_SURFACE_UP)->mHeight;
@@ -597,7 +604,7 @@ void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
 			CT->mTexture = (LT + KEY_PRESS_SURFACE_UP)->mTexture;
 			break;
 		case SDLK_LEFT:
-			if (time % 2 == 0)
+			if ((time/350) % 2 == 0)
 			{
 				CT->mHeight = (LT + KEY_PRESS_SURFACE_RIGHT)->mHeight;
 				CT->mTexture = (LT + KEY_PRESS_SURFACE_RIGHT)->mTexture;
@@ -611,7 +618,7 @@ void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
 			}
 			break;
 		case SDLK_RIGHT:
-			if (time % 2 == 0)
+			if ((time/350) % 2 == 0)
 			{
 				CT->mHeight = (LT + KEY_PRESS_SURFACE_LEFT)->mHeight;
 				CT->mTexture = (LT + KEY_PRESS_SURFACE_LEFT)->mTexture;
@@ -685,7 +692,6 @@ int getPosY(_LPlayer* LP)
 }
 bool setTiles(_LTile *tiles)
 {
-	printf("setTiles");
 	bool loaded = true;
 	int x = 0, y = 0, i = 0;
 
@@ -704,7 +710,6 @@ bool setTiles(_LTile *tiles)
 		i++;
 		ptr = strtok(NULL, " ");
 	}
-
 	if (fp == NULL)
 	{
 		printf("맵파일 로드 실패!\n");
@@ -712,11 +717,8 @@ bool setTiles(_LTile *tiles)
 	}
 	else
 	{
-		printf("else");
-		i = 0;
 		for (int i = 0; i < 767; i++)
 		{
-
 			int tileType = -1;
 			if (!strcmp(map[i], "00"))
 			{
@@ -825,13 +827,13 @@ bool setTiles(_LTile *tiles)
 			}
 			else if (!strcmp(map[i], "21"))
 			{
-			tileType = 21;
-			printf("\n set tileType : 21");
+				tileType = 21;
+				printf("\n set tileType : 21");
 			}
 			else if (!strcmp(map[i], "22"))
 			{
-			tileType = 22;
-			printf("\n set tileType : 22");
+				tileType = 22;
+				printf("\n set tileType : 22");
 			}
 
 			printf("\nready to set tiles");

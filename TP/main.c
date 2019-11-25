@@ -54,7 +54,7 @@ const int SCREEN_HEIGHT = 720; //스크린 세로
 const int SCREEN_FPS = 60;     //스크린 프레임
 const int SCREEN_TICK_PER_FRAME = 17; //틱당 프레임
 
-//타일 상수e3
+//타일 상수
 const int TILE_WIDTH = 80;//타일 가로크기
 const int TILE_HEIGHT = 80;//타일 세로크기
 const int TOTAL_TILES = 763;
@@ -156,13 +156,6 @@ int main()
 					{
 						switch (e.key.keysym.sym)
 						{
-							
-						case SDLK_o:
-							gPlayer.Player_VEL = 20;
-							gCurrentText.mTexture = gTextTexture[1].mTexture;
-							gCurrentText.mHeight = gTextTexture[1].mHeight;
-							gCurrentText.mWidth = gTextTexture[1].mWidth;
-							break;
 						case SDLK_s: //타이머 멈추기
 							if (timer_isStarted(&timer))
 							{
@@ -194,10 +187,10 @@ int main()
 					}
 						
 					V_handleEvent(&gPlayer, &e); //키다운에 따른 이동 이벤트
-					for (int i =0;i<5;i++)
-						reverse_V_handleEvent(&gDuck[i], &e);
+					for (int i = 0; i < 5; i++)
+							reverse_V_handleEvent(&gDuck[i], &e);
 					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks() / 350);  //키다운에 따른 텍스쳐 변경
-					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, SDL_GetTicks() / 350);
+					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, SDL_GetTicks());
 				}
 
 				float avgFPS = countedFrames / (getTicks(&fpsTimer) / (float)1000);
@@ -261,8 +254,19 @@ int main()
 				//랜더(타이머, 텍스트)
 				render(&gTimeText, gRenderer, 30, 30);
 				render(&gCurrentTime, gRenderer, 130, 30);
-				render(&gCurrentText, gRenderer, 30, 60);
-
+				if (Ctime<=140)
+				{
+					gCurrentText.mTexture = gTextTexture[1].mTexture;
+					gCurrentText.mHeight = gTextTexture[1].mHeight;
+					gCurrentText.mWidth = gTextTexture[1].mWidth;
+					for(int i =0;i<5;i++)
+						gDuck[i].Player_VEL = 4;
+					render(&gCurrentText, gRenderer, 30, 60);
+				}
+				else
+				{
+					render(&gCurrentText, gRenderer, 30, 60);
+				}
 
 
 				SDL_Rect botRightViewport;
