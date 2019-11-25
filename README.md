@@ -4,6 +4,8 @@
 
 ##사용한 라이브러리
 
->SDL 2.0
->SDL_image
->SDL_ttf
+-SDL 2.0
+-SDL_image
+-SDL_ttf
+
+
