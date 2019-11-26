@@ -232,21 +232,12 @@ bool loadMedia(_LTile *tiles[])
 		printf("오리(right02) 로드 실패!\n");
 		Sflag = false;
 	}
-
-
 	loadFromFile(&gSightLimiter, gRenderer, "images/SightLimiter.png");
 	if (gSightLimiter.mTexture == NULL)
 	{
 		printf("사이트리미터 로드 실패!\n");
 		Sflag = false;
 	}
-	loadFromFile(&gStartPage, gRenderer, "images/StartPage.png");
-	if (gSightLimiter.mTexture == NULL)
-	{
-		printf("시작화면 로드 실패!\n");
-		Sflag = false;
-	}
-
 	gLetterbox = loadTexture("images/Lbox.png");
 	if (gLetterbox == NULL)
 	{
@@ -281,6 +272,38 @@ bool loadMedia(_LTile *tiles[])
 		{
 			printf("타이머를 랜더할 수 없습니다! \n");
 		}
+		if (!loadFromRenderedText(&gLeaderBoard[0], gRenderer, gFont, "1위 : ", textColor))
+		{
+			printf("리더보드 랜더 실패!");
+			Sflag = false;
+		}
+		if (!loadFromRenderedText(&gLeaderBoard[1], gRenderer, gFont, "2위 : ", textColor))
+		{
+			printf("리더보드 랜더 실패!");
+			Sflag = false;
+		}
+		if (!loadFromRenderedText(&gLeaderBoard[2], gRenderer, gFont, "3위 : ", textColor))
+		{
+			printf("리더보드 랜더 실패!");
+			Sflag = false;
+		}
+		if (!loadFromRenderedText(&gLeaderBoard[3], gRenderer, gFont, "4위 : ", textColor))
+		{
+			printf("리더보드 랜더 실패!");
+			Sflag = false;
+		}
+		if (!loadFromRenderedText(&gLeaderBoard[4], gRenderer, gFont, "5위 : ", textColor))
+		{
+			printf("리더보드 랜더 실패!");
+			Sflag = false;
+		}
+
+		if (!loadFromRenderedText(&gStartText, gRenderer, gFont, "Enter키를 눌러 게임을 시작하세요", textColor))
+		{
+			printf("스타트텍스트 랜더 실패!");
+			Sflag = false;
+		}
+		
 
 		textColor.g = 0;
 		textColor.b = 0;
@@ -289,6 +312,7 @@ bool loadMedia(_LTile *tiles[])
 			printf("텍스쳐 랜더 실패!");
 			Sflag = false;
 		}
+		
 
 	}
 	//타일 텍스쳐 오픈
