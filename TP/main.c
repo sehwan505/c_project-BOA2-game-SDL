@@ -34,7 +34,6 @@ SDL Pratice
 #include "timer.h"
 
 
-
 SDL_Renderer* gRenderer = NULL;     //랜더러 포인터
 SDL_Surface* loadSurface(char* path); //경로에 있는 서피스 로드 함수
 SDL_Texture* loadTexture(char* path); //위와 같은 기능 ( 서피스보다 성능 좋음)
@@ -71,8 +70,9 @@ struct _LTexture gTextTexture[2]; //택스트도 구조체 배열을 통하여 미리 집어넣어�
 struct _LTexture gCurrentSurface; //현재 표시되는 서피스
 struct _LTexture gCurrentText;    //현재 표시되는 텍스트
 struct _LTexture gTileTexture[23];//타일셋 텍스처
-struct _LTexture gStartPage;
 struct _LTexture gLeaderBoard[5];
+struct _LTexture gScore[5];
+struct _LTexture gStartText;
 struct _LPlayer gPlayer;
 struct _LPlayer gDuck[5];
 struct _LTimer timer;
@@ -209,10 +209,24 @@ int main()
 				{
 					SDL_RenderClear(gRenderer);
 					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF); //랜더러 색을 검은색으로 설정
-					
+
 					gPlayer.mBox.x = 0;
-					gPlayer.mBox.y = 0;
+					gPlayer.mBox.y = 0;//플레이어 위치 초기화
+
 					render(&gDuckTexture[5], gRenderer, 80, 80);
+
+					for (int i = 0;i < 5;i++)
+					{
+						render(&gLeaderBoard[i], gRenderer, 240, 75 * (i+1));
+					}//리더보드 글자 생성
+
+					for (int i = 0;i < 5;i++)
+					{
+						render(&gLeaderBoard[i], gRenderer, 300, 75 * (i + 1));
+					}//리더보드 스코어 생성
+
+					
+
 
 					for (int i = 0; i < 5; i++)
 					{
@@ -224,9 +238,12 @@ int main()
 							gDuck[i].mBox.y = ranY;
 
 						} while (touchesWall(gDuck[i].mBox, tileSet));
-					}
+					}//오리위치 재설정
+
 
 					timer_stop(&capTimer);
+
+					render(&gStartText, gRenderer, 250, 420);
 					SDL_RenderPresent(gRenderer);
 					Stime = SDL_GetTicks() / 1000;
 
@@ -332,7 +349,7 @@ int main()
 					//!!!랜더링 순서 중요함!!! 
 					for (int i = 0; i < 5; i++)
 						render(&gCurrentDuck, gRenderer, gDuck[i].mBox.x - Camera.x, gDuck[i].mBox.y - Camera.y);
-					//render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1310 - Camera.x, gPlayer.mBox.y - 730 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
+					render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1310 - Camera.x, gPlayer.mBox.y - 730 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
 					render(&gCurrentSurface, gRenderer, gPlayer.mBox.x - Camera.x, gPlayer.mBox.y - Camera.y); //플레이어 무브
 
 					SDL_RenderPresent(gRenderer);  //Update
@@ -358,7 +375,68 @@ int main()
 
 	return 0;
 }
-bool StartPage() {
-	
+
+
+void fileRead(char* buffer)
+{
+	char tempbuf[12000];
+	FILE *fp = fopen("level.map", "r");
+
+	fgets(tempbuf, sizeof(tempbuf), fp);
+
+	printf("%s\n", tempbuf);
+	fclose(fp);
+	strcpy(buffer, tempbuf);
+
+}
+int refToken(char* buf[], char *inp[])
+{
+	int i = 0;
+	char *ptr = strtok(buf, " ");
+
+
+	while (ptr != NULL)
+	{
+		inp[i] = ptr;
+		i++;
+		ptr = strtok(NULL, " ");
+	}
+
+
+	for (int i = 0; i < 12000; i++)
+	{
+		if (inp[i] != NULL)
+			printf("%s\n", inp[i]);
+	}
+	printf("\n\n\n");
+
+	if (!strcmp("02", inp[2]))
+	{
+		int temp = 2;
+		printf("%d\n", temp);
+	}
+
+
+	return i;
+}
+void selectionSort(int *pArr, int num)
+{
+	for (int i = 0; i < num; i++)
+	{
+		int n = i;
+		for (int j = (i + 1); j < num; j++)
+		{
+			if (*(pArr + j) < *(pArr + n))
+				n = j;
+		}
+		SWAP((pArr + i), (pArr + n));
+	}
 }
 
+void SWAP(int *pa, int *pb)
+{
+	int temp;
+	temp = *pa;
+	*pa = *pb;
+	*pb = temp;
+}

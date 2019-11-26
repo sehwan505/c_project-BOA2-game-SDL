@@ -72,8 +72,9 @@ extern struct _LTexture gTextTexture[2]; //택스트도 구조체 배열을 통하여 미리 집
 extern struct _LTexture gCurrentSurface; //현재 표시되는 서피스
 extern struct _LTexture gCurrentText;    //현재 표시되는 텍스트
 extern struct _LTexture gTileTexture[23];//타일셋 텍스처
-extern struct _LTexture gStartPage;
 extern struct _LTexture gLeaderBoard[5];
+extern struct _LTexture gScore[5];
+extern struct _LTexture gStartText;
 extern struct _LPlayer gPlayer;
 extern struct _LPlayer gDuck[5];
 extern struct _LTimer timer;
@@ -100,3 +101,9 @@ bool checkCollision(SDL_Rect , SDL_Rect ); //충돌판정
 int getPosX(_LPlayer* );
 int getPosY(_LPlayer* );
 void setCamera(_LPlayer* , SDL_Rect* );
+
+//fileIO
+void fileRead(char* buffer);
+int refToken(char* buf[], char *inp[]);
+void selectionSort(int *pArr, int num);
+void SWAP(int *pa, int *pb);
