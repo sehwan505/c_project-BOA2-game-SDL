@@ -72,6 +72,8 @@ extern struct _LTexture gTextTexture[2]; //택스트도 구조체 배열을 통하여 미리 집
 extern struct _LTexture gCurrentSurface; //현재 표시되는 서피스
 extern struct _LTexture gCurrentText;    //현재 표시되는 텍스트
 extern struct _LTexture gTileTexture[23];//타일셋 텍스처
+extern struct _LTexture gStartPage;
+extern struct _LTexture gLeaderBoard[5];
 extern struct _LPlayer gPlayer;
 extern struct _LPlayer gDuck[5];
 extern struct _LTimer timer;

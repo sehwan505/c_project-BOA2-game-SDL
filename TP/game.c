@@ -240,6 +240,12 @@ bool loadMedia(_LTile *tiles[])
 		printf("사이트리미터 로드 실패!\n");
 		Sflag = false;
 	}
+	loadFromFile(&gStartPage, gRenderer, "images/StartPage.png");
+	if (gSightLimiter.mTexture == NULL)
+	{
+		printf("시작화면 로드 실패!\n");
+		Sflag = false;
+	}
 
 	gLetterbox = loadTexture("images/Lbox.png");
 	if (gLetterbox == NULL)

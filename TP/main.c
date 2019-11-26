@@ -71,6 +71,8 @@ struct _LTexture gTextTexture[2]; //택스트도 구조체 배열을 통하여 미리 집어넣어�
 struct _LTexture gCurrentSurface; //현재 표시되는 서피스
 struct _LTexture gCurrentText;    //현재 표시되는 텍스트
 struct _LTexture gTileTexture[23];//타일셋 텍스처
+struct _LTexture gStartPage;
+struct _LTexture gLeaderBoard[5];
 struct _LPlayer gPlayer;
 struct _LPlayer gDuck[5];
 struct _LTimer timer;
@@ -97,6 +99,7 @@ int main()
 		{
 			//메인루프 플래그
 			bool quit = false;
+			bool game_end = false;
 
 			//이벤트 핸들러
 			SDL_Event e;
@@ -138,7 +141,8 @@ int main()
 			struct _LTimer capTimer;
 			int  countedFrames = 0;
 			timer_start(&fpsTimer);
-
+			int Stime = SDL_GetTicks() / 1000;
+			
 			//메인루프 
 			while (!quit)
 			{
@@ -152,10 +156,12 @@ int main()
 					{
 						quit = true;
 					}
-					else if (e.type == SDL_KEYDOWN) 
+					else if (e.type == SDL_KEYDOWN)
 					{
 						switch (e.key.keysym.sym)
 						{
+						case SDLK_RETURN:
+							game_end = false;
 						case SDLK_s: //타이머 멈추기
 							if (timer_isStarted(&timer))
 							{
@@ -185,10 +191,10 @@ int main()
 							gCurrentSurface.mTexture = gMainplayerTexture[KEY_PRESS_SURFACE_DEFAULT].mTexture;
 						}
 					}
-						
+
 					V_handleEvent(&gPlayer, &e); //키다운에 따른 이동 이벤트
 					for (int i = 0; i < 5; i++)
-							reverse_V_handleEvent(&gDuck[i], &e);
+						reverse_V_handleEvent(&gDuck[i], &e);
 					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks() / 350);  //키다운에 따른 텍스쳐 변경
 					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, SDL_GetTicks());
 				}
@@ -199,115 +205,142 @@ int main()
 					avgFPS = 0;
 				}
 
-			
-
-				
-				//시간 표시를 위한 변수 설정
-				SDL_Color timeColor = { 255,255,255 };
-				int Ctime = 150 - SDL_GetTicks() / 1000;
-				sprintf(time, "%d", Ctime);
-				
-				if (!loadFromRenderedText(&gCurrentTime, gRenderer, gFont,time, timeColor))
+				if (game_end)
 				{
-					printf("메인 타이머를 랜더할 수 없습니다! \n");
-				}
-				if (Ctime <= 0) //남은 시간이 0이하일때 종료
-				{
-					printf("타임오버!\n");
-					quit = true;
-				}
-				
+					SDL_RenderClear(gRenderer);
+					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF); //랜더러 색을 검은색으로 설정
+					
+					gPlayer.mBox.x = 0;
+					gPlayer.mBox.y = 0;
+					render(&gDuckTexture[5], gRenderer, 80, 80);
 
-				SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF); //랜더러 색을 검은색으로 설정
-				SDL_RenderClear(gRenderer);
-				//검은화면 랜더러 설정 후 랜더러 클리어
-
-				//캐릭터 이동 & 카메라 셋팅
-				move(&gPlayer,&tileSet);
-				for (int i = 0; i < 5; i++)
-				{
-					move(&gDuck[i], &tileSet);
-					if (checkCollision(gPlayer.mBox, (gDuck+i)->mBox))
+					for (int i = 0; i < 5; i++)
 					{
-						quit = true;
+						do {
+
+							int ranX = rand() % LEVEL_WIDTH;
+							int ranY = rand() % LEVEL_HEIGHT;
+							gDuck[i].mBox.x = ranX;
+							gDuck[i].mBox.y = ranY;
+
+						} while (touchesWall(gDuck[i].mBox, tileSet));
 					}
-				}
-				setCamera(&gPlayer, &Camera);
 
-				/*
-				if (checkCollision(gPlayer.mBox, tileSet[2].mBox))
-				{
-					quit = true;
-					printf("\n승리!\n");
-				}
-				*/
-				
-				SDL_Rect botLeftViewport; //로그박스 뷰포트
-				botLeftViewport.x = 0;
-				botLeftViewport.y = SCREEN_HEIGHT * 2 / 3;
-				botLeftViewport.w = SCREEN_WIDTH * 2 / 3;
-				botLeftViewport.h = SCREEN_HEIGHT / 3;
-				SDL_RenderSetViewport(gRenderer, &botLeftViewport);
+					timer_stop(&capTimer);
+					SDL_RenderPresent(gRenderer);
+					Stime = SDL_GetTicks() / 1000;
 
-				SDL_RenderCopy(gRenderer, gLetterbox, NULL, NULL);
-
-				//랜더(타이머, 텍스트)
-				render(&gTimeText, gRenderer, 30, 30);
-				render(&gCurrentTime, gRenderer, 130, 30);
-				if (Ctime<=140)
-				{
-					gCurrentText.mTexture = gTextTexture[1].mTexture;
-					gCurrentText.mHeight = gTextTexture[1].mHeight;
-					gCurrentText.mWidth = gTextTexture[1].mWidth;
-					for(int i =0;i<5;i++)
-						gDuck[i].Player_VEL = 4;
-					render(&gCurrentText, gRenderer, 30, 60);
 				}
 				else
 				{
-					render(&gCurrentText, gRenderer, 30, 60);
-				}
+					
+					//시간 표시를 위한 변수 설정
+					SDL_Color timeColor = { 255,255,255 };
+					int Ctime = 150 - (SDL_GetTicks() / 1000 - Stime);
+					sprintf(time, "%d", Ctime);
 
-
-				SDL_Rect botRightViewport;
-				botRightViewport.x = SCREEN_WIDTH * 2 / 3;
-				botRightViewport.y = SCREEN_HEIGHT * 2 / 3;
-				botRightViewport.w = SCREEN_WIDTH / 3;
-				botRightViewport.h = SCREEN_HEIGHT / 3;
-				SDL_RenderSetViewport(gRenderer, &botRightViewport);
-
-				SDL_RenderCopy(gRenderer, gMinimap, NULL, NULL);
-				
-
-
-				SDL_Rect topViewport;
-				topViewport.x = 0;
-				topViewport.y = 0;
-				topViewport.w = SCREEN_WIDTH;
-				topViewport.h = SCREEN_HEIGHT * 2 / 3;
-				SDL_RenderSetViewport(gRenderer, &topViewport); //위에서 설정한 뷰포트로 랜더러 설정
-
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				
-			
-				for (int i = 0; i < TOTAL_TILES; ++i)
-				{
-					if (checkCollision(Camera, (tileSet + i)->mBox))
+					if (!loadFromRenderedText(&gCurrentTime, gRenderer, gFont, time, timeColor))
 					{
-						render(&gTileTexture[(tileSet + i)->mType], gRenderer, (tileSet + i)->mBox.x - Camera.x, (tileSet + i)->mBox.y - Camera.y);
+						printf("메인 타이머를 랜더할 수 없습니다! \n");
 					}
-				}
-				
-				//!!!랜더링 순서 중요함!!! 
-				for(int i=0;i<5;i++)
-					render(&gCurrentDuck, gRenderer, gDuck[i].mBox.x - Camera.x, gDuck[i].mBox.y - Camera.y);
-				//render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1310 - Camera.x, gPlayer.mBox.y - 730 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
-				render(&gCurrentSurface, gRenderer, gPlayer.mBox.x - Camera.x, gPlayer.mBox.y - Camera.y); //플레이어 무브
-				
-				SDL_RenderPresent(gRenderer);  //Update
-				++countedFrames;
+					if (Ctime <= 0) //남은 시간이 0이하일때 종료
+					{
+						printf("타임오버!\n");
+						game_end = true;
+					}
 
-				
+
+					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF); //랜더러 색을 검은색으로 설정
+					SDL_RenderClear(gRenderer);
+					//검은화면 랜더러 설정 후 랜더러 클리어
+
+					//캐릭터 이동 & 카메라 셋팅
+					move(&gPlayer, &tileSet);
+					for (int i = 0; i < 5; i++)
+					{
+						move(&gDuck[i], &tileSet);
+						if (checkCollision(gPlayer.mBox, (gDuck + i)->mBox))
+						{
+							game_end = true;
+						}//오리랑 플레이어 충돌시 종료
+					}
+					setCamera(&gPlayer, &Camera);
+
+
+					if (checkCollision(gPlayer.mBox, tileSet[2].mBox))
+					{
+						game_end = true;
+					}
+
+
+					SDL_Rect botLeftViewport; //로그박스 뷰포트
+					botLeftViewport.x = 0;
+					botLeftViewport.y = SCREEN_HEIGHT * 2 / 3;
+					botLeftViewport.w = SCREEN_WIDTH * 2 / 3;
+					botLeftViewport.h = SCREEN_HEIGHT / 3;
+					SDL_RenderSetViewport(gRenderer, &botLeftViewport);
+
+					SDL_RenderCopy(gRenderer, gLetterbox, NULL, NULL);
+
+					//랜더(타이머, 텍스트)
+					render(&gTimeText, gRenderer, 30, 30);
+					render(&gCurrentTime, gRenderer, 130, 30);
+					if (Ctime <= 140)
+					{
+						gCurrentText.mTexture = gTextTexture[1].mTexture;
+						gCurrentText.mHeight = gTextTexture[1].mHeight;
+						gCurrentText.mWidth = gTextTexture[1].mWidth;
+						for (int i = 0; i < 5; i++)
+							gDuck[i].Player_VEL = 4;
+						render(&gCurrentText, gRenderer, 30, 60);
+					}
+					else
+					{
+						render(&gCurrentText, gRenderer, 30, 60);
+					}
+
+
+					SDL_Rect botRightViewport;
+					botRightViewport.x = SCREEN_WIDTH * 2 / 3;
+					botRightViewport.y = SCREEN_HEIGHT * 2 / 3;
+					botRightViewport.w = SCREEN_WIDTH / 3;
+					botRightViewport.h = SCREEN_HEIGHT / 3;
+					SDL_RenderSetViewport(gRenderer, &botRightViewport);
+
+					SDL_RenderCopy(gRenderer, gMinimap, NULL, NULL);
+
+
+
+					SDL_Rect topViewport;
+					topViewport.x = 0;
+					topViewport.y = 0;
+					topViewport.w = SCREEN_WIDTH;
+					topViewport.h = SCREEN_HEIGHT * 2 / 3;
+					SDL_RenderSetViewport(gRenderer, &topViewport); //위에서 설정한 뷰포트로 랜더러 설정
+
+					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+
+					for (int i = 0; i < TOTAL_TILES; ++i)
+					{
+						if (checkCollision(Camera, (tileSet + i)->mBox))
+						{
+							render(&gTileTexture[(tileSet + i)->mType], gRenderer, (tileSet + i)->mBox.x - Camera.x, (tileSet + i)->mBox.y - Camera.y);
+						}
+					}
+
+					//!!!랜더링 순서 중요함!!! 
+					for (int i = 0; i < 5; i++)
+						render(&gCurrentDuck, gRenderer, gDuck[i].mBox.x - Camera.x, gDuck[i].mBox.y - Camera.y);
+					//render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1310 - Camera.x, gPlayer.mBox.y - 730 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
+					render(&gCurrentSurface, gRenderer, gPlayer.mBox.x - Camera.x, gPlayer.mBox.y - Camera.y); //플레이어 무브
+
+					SDL_RenderPresent(gRenderer);  //Update
+					++countedFrames;
+
+					
+
+				}
 
 				int frameTicks = getTicks(&capTimer);
 				if (frameTicks < SCREEN_TICK_PER_FRAME)
@@ -316,6 +349,7 @@ int main()
 				}//초당 60프레임 이상 랜더 방지
 
 			}
+
 		}
 
 	}
@@ -324,5 +358,7 @@ int main()
 
 	return 0;
 }
-
+bool StartPage() {
+	
+}
 
