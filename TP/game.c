@@ -901,7 +901,15 @@ bool touchesWall(SDL_Rect box, _LTile* tiles) //벽타일과 충돌하는지 검사
 	}
 	return false;
 }
+void fileInput(int inp) {
+	FILE* fp;
+	fp = fopen("score.txt", "a");
+	
+	fprintf(fp, " %d", inp);
+	
+	fclose(fp);
 
+}
 void fileRead(char* buffer)
 {
 	char tempbuf[12000];
@@ -948,6 +956,8 @@ void selectionSort(int* pArr, int num)
 {
 	for (int i = 0; i < num; i++)
 	{
+		if (*(pArr + i) == NULL)
+			return;
 		int n = i;
 		for (int j = (i + 1); j < num; j++)
 		{
@@ -956,6 +966,7 @@ void selectionSort(int* pArr, int num)
 		}
 		SWAP((pArr + i), (pArr + n));
 	}
+	return;
 }
 
 void SWAP(int* pa, int* pb)

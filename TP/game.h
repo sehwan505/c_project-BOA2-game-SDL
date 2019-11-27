@@ -107,3 +107,4 @@ void fileRead(char* buffer);
 int refToken(char* buf[], char *inp[]);
 void selectionSort(int *pArr, int num);
 void SWAP(int *pa, int *pb);
+void fileInput(int inp);

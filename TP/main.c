@@ -176,7 +176,19 @@ int main()
 					gPlayer.mBox.y = 0;//플레이어 위치 초기화
 
 					render(&gDuckTexture[5], gRenderer, 80, 80);
-
+					
+					SDL_Color ScoreColor = { 255,255,255 };
+					char temp[120];
+					char *leaderboard[120];
+					fileRead(temp);
+					refToken(temp, leaderboard);
+					selectionSort(leaderboard,120);
+					for (int i = 0; i < 5; i++) { //스코어 로드
+						if (!loadFromRenderedText(&gScore[i], gRenderer, gFont, leaderboard[i], ScoreColor))
+						{
+							printf("스코어를 랜더할 수 없습니다! \n");
+						}
+					}
 					for (int i = 0; i < 5; i++)
 					{
 						render(&gLeaderBoard[i], gRenderer, 240, 75 * (i + 1));
@@ -186,8 +198,8 @@ int main()
 					{
 						render(&gLeaderBoard[i], gRenderer, 300, 75 * (i + 1));
 					}//리더보드 스코어 생성
-
-
+					
+					
 					for (int i = 0; i < 5; i++)
 					{
 						do {
@@ -223,7 +235,7 @@ int main()
 					{
 						printf("타임오버!\n");
 						score /= 2; //진거니까 스코어 타노스
-						printf("\nScore : %d", score);
+						fileInput(score);
 						game_end = true;
 					}
 
@@ -239,6 +251,7 @@ int main()
 						if (checkCollision(gPlayer.mBox, (gDuck + i)->mBox)) //오리랑 플레이어 충돌시 패배
 						{
 							score /= 2; //진거니까 스코어 타노스
+							fileInput(score);
 							printf("\nScore : %d", score);
 							game_end = true;
 						}
@@ -249,6 +262,7 @@ int main()
 					if (checkCollision(gPlayer.mBox, tileSet[733].mBox)) //탈출구 타일과 충돌시 승리
 					{
 						printf("\nScore : %d", score);
+						fileInput(score);
 						game_end = true;
 					}
 
