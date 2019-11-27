@@ -29,7 +29,7 @@ typedef struct _LPlayer //플레이어 구조체
 	int mVelX, mVelY;
 }_LPlayer;
 
-typedef struct _LTile
+typedef struct _LTile //타일 구조체
 {
 	SDL_Rect mBox;
 	int mType;

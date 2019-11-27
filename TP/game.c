@@ -10,7 +10,7 @@
 #include "timer.h"
 
 
-bool init()
+bool init() //초기화 함수
 {
 	bool Sflag = true; //success flag
 
@@ -81,7 +81,7 @@ bool init()
 	{
 		gDuck[i].Player_HEIGHT = 75;
 		gDuck[i].Player_WIDTH = 75;
-		gDuck[i].Player_VEL = 2;
+		gDuck[i].Player_VEL = 4;
 		gDuck[i].mBox.w = gDuck[i].Player_WIDTH;
 		gDuck[i].mBox.h = gDuck[i].Player_HEIGHT;
 		gDuck[i].mVelX = 0;
@@ -90,6 +90,7 @@ bool init()
 		gDuck[i].mBox.y = 0;
 	}
 
+	//타이머 구조체 맴버 초기화
 	timer.mStartTicks = 0;
 	timer.mPauseTicks = 0;
 	timer.mPaused = false;
@@ -97,8 +98,8 @@ bool init()
 
 	return Sflag;
 
-}
-SDL_Surface* loadSurface(char* path)
+} 
+SDL_Surface* loadSurface(char* path)  //이미지 로드 함수(비트맵 이미지)
 {
 	//경로의 이미지 로드
 	SDL_Surface* loadedSurface = SDL_LoadBMP(path);
@@ -107,11 +108,10 @@ SDL_Surface* loadSurface(char* path)
 	}
 	return loadedSurface;
 }
-SDL_Texture* loadTexture(char* path)
+SDL_Texture* loadTexture(char* path)  //이미지 로드&텍스쳐 변환 함수(PNG)
 {
 	SDL_Texture* newTexture = NULL;
 
-	//SDL_Surface* loadedSurface = SDL_LoadBMP(path);
 	SDL_Surface* loadedSurface = IMG_Load(path);
 	if (loadedSurface == NULL)
 	{
@@ -125,12 +125,12 @@ SDL_Texture* loadTexture(char* path)
 			printf("텍스쳐 생성 실패! : %s\n", SDL_GetError());
 		}
 
-		SDL_FreeSurface(loadedSurface);
+		SDL_FreeSurface(loadedSurface); //자원 반납
 	}
 	return newTexture;
 
 }
-bool loadMedia(_LTile *tiles[])
+bool loadMedia(_LTile *tiles[]) //각종 이미지 로드
 {
 	bool Sflag = true; //success flag
 
@@ -232,6 +232,8 @@ bool loadMedia(_LTile *tiles[])
 		printf("오리(right02) 로드 실패!\n");
 		Sflag = false;
 	}
+
+
 	loadFromFile(&gSightLimiter, gRenderer, "images/SightLimiter.png");
 	if (gSightLimiter.mTexture == NULL)
 	{
@@ -252,7 +254,7 @@ bool loadMedia(_LTile *tiles[])
 		Sflag = false;
 	}
 
-	//위랑 같이 폰트 불러옴
+	// 폰트 불러옴
 	gFont = TTF_OpenFont("korean.ttf", 28);
 	if (gFont == NULL)
 	{
@@ -304,17 +306,15 @@ bool loadMedia(_LTile *tiles[])
 			Sflag = false;
 		}
 		
-
 		textColor.g = 0;
 		textColor.b = 0;
-		if (!loadFromRenderedText(&gTextTexture[1], gRenderer, gFont, "시간이 얼마 남지 않아 오리의 이동속도가 증가합니다!", textColor))
+		if (!loadFromRenderedText(&gTextTexture[1], gRenderer, gFont, "시간이 얼마 남지 않아 오리의 모습이 흉폭해집니다!", textColor))
 		{
 			printf("텍스쳐 랜더 실패!");
 			Sflag = false;
 		}
-		
-
 	}
+
 	//타일 텍스쳐 오픈
 	loadFromFile(&gTileTexture[0], gRenderer, "images/tiles/00.png");
 	loadFromFile(&gTileTexture[1], gRenderer, "images/tiles/01.png");
@@ -355,7 +355,7 @@ bool loadMedia(_LTile *tiles[])
 	//위와 같이 원하는 이미지를 포인터에 박은후 랜더러에 각각 매치시켜서 업데이트 
 	return Sflag;
 }
-void close()
+void close() //자원 반납 & 라이브러리 종료
 {
 	SDL_DestroyTexture(gTexture);
 	gTexture = NULL;
@@ -390,7 +390,7 @@ void close()
 	IMG_Quit();
 	TTF_Quit();
 }
-bool loadFromFile(_LTexture* LT, SDL_Renderer* Renderer, char* path)
+bool loadFromFile(_LTexture* LT, SDL_Renderer* Renderer, char* path) //PNG로드해서 텍스쳐 생성(이미지 크기도 저장) -> 텍스쳐 구조체로 반환
 {
 	lfree(LT);
 
@@ -528,10 +528,10 @@ void move(_LPlayer* LP, _LTile *tiles) //플레이어 무브 & 충돌처리
 		LP->mBox.y -= LP->mVelY;
 	}
 }
-void setCamera(_LPlayer* LP, SDL_Rect* camera)
+void setCamera(_LPlayer* LP, SDL_Rect* camera) //카메라 셋팅
 {
 	camera->x = (getPosX(LP) + LP->Player_WIDTH / 2) - SCREEN_WIDTH / 2;
-	camera->y = (getPosY(LP) + LP->Player_HEIGHT / 2) - (SCREEN_HEIGHT*2/3) / 2;
+	camera->y = (getPosY(LP) + LP->Player_HEIGHT / 2) - (SCREEN_HEIGHT * 2 / 3) / 2;
 
 	if (camera->x < 0)
 	{
@@ -550,7 +550,7 @@ void setCamera(_LPlayer* LP, SDL_Rect* camera)
 		camera->y = LEVEL_HEIGHT - camera->h;
 	}
 }
-void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time)
+void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time) //텍스쳐 핸들링
 {
 	if (e->type == SDL_KEYDOWN)
 	{
@@ -607,7 +607,7 @@ void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time)
 		}
 	}
 }
-void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
+void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time) //텍스쳐 핸들링(오리)
 {
 	if (e->type == SDL_KEYDOWN)
 	{
@@ -712,15 +712,15 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) //충돌판정 함수(충돌-> return false)
 
 	return true;
 }
-int getPosX(_LPlayer* LP)
+int getPosX(_LPlayer* LP) //현재 플레이어의 x좌표 반환
 {
 	return LP->mBox.x;
 }
-int getPosY(_LPlayer* LP)
+int getPosY(_LPlayer* LP) //현재 플레이어의 y좌표 반환
 {
 	return LP->mBox.y;
 }
-bool setTiles(_LTile *tiles)
+bool setTiles(_LTile *tiles) //맵파일 읽어서 타일셋팅
 {
 	bool loaded = true;
 	int x = 0, y = 0, i = 0;
@@ -753,127 +753,126 @@ bool setTiles(_LTile *tiles)
 			if (!strcmp(map[i], "00"))
 			{
 				tileType = 0;
-				printf("\n set tileType : 00");
+				printf("\n set tileType : 00 ");
 			}
 			else if (!strcmp(map[i], "01"))
 			{
 				tileType = 1;
-				printf("\n set tileType : 01");
+				printf("\n set tileType : 01 ");
 			}
 			else if (!strcmp(map[i], "02"))
 			{
 				tileType = 2;
-				printf("\n set tileType : 02");
+				printf("\n set tileType : 02 ");
 			}
 			else if (!strcmp(map[i], "03"))
 			{
 				tileType = 3;
-				printf("\n set tileType : 03");
+				printf("\n set tileType : 03 ");
 			}
 			else if (!strcmp(map[i], "04"))
 			{
 				tileType = 4;
-				printf("\n set tileType : 04");
+				printf("\n set tileType : 04 ");
 			}
 			else if (!strcmp(map[i], "05"))
 			{
 				tileType = 5;
-				printf("\n set tileType : 05");
+				printf("\n set tileType : 05 ");
 			}
 			else if (!strcmp(map[i], "06"))
 			{
 				tileType = 6;
-				printf("\n set tileType : 06");
+				printf("\n set tileType : 06 ");
 			}
 			else if (!strcmp(map[i], "07"))
 			{
 				tileType = 7;
-				printf("\n set tileType : 07");
+				printf("\n set tileType : 07 ");
 			}
 			else if (!strcmp(map[i], "08"))
 			{
 				tileType = 8;
-				printf("\n set tileType : 08");
+				printf("\n set tileType : 08 ");
 			}
 			else if (!strcmp(map[i], "09"))
 			{
 				tileType = 9;
-				printf("\n set tileType : 09");
+				printf("\n set tileType : 09 ");
 			}
 			else if (!strcmp(map[i], "10"))
 			{
 				tileType = 10;
-				printf("\n set tileType : 10");
+				printf("\n set tileType : 10 ");
 			}
 			else if (!strcmp(map[i], "11"))
 			{
 				tileType = 11;
-				printf("\n set tileType : 11");
+				printf("\n set tileType : 11 ");
 			}
 			else if (!strcmp(map[i], "12"))
 			{
 				tileType = 12;
-				printf("\n set tileType : 12");
+				printf("\n set tileType : 12 ");
 			}
 			else if (!strcmp(map[i], "13"))
 			{
 				tileType = 13;
-				printf("\n set tileType : 13");
+				printf("\n set tileType : 13 ");
 			}
 			else if (!strcmp(map[i], "14"))
 			{
 				tileType = 14;
-				printf("\n set tileType : 14");
+				printf("\n set tileType : 14 ");
 			}
 			else if (!strcmp(map[i], "15"))
 			{
 				tileType = 15;
-				printf("\n set tileType : 15");
+				printf("\n set tileType : 15 ");
 			}
 			else if (!strcmp(map[i], "16"))
 			{
 				tileType = 16;
-				printf("\n set tileType : 16");
+				printf("\n set tileType : 16 ");
 			}
 			else if (!strcmp(map[i], "17"))
 			{
 				tileType = 17;
-				printf("\n set tileType : 17");
+				printf("\n set tileType : 17 ");
 			}
 			else if (!strcmp(map[i], "18"))
 			{
 				tileType = 18;
-				printf("\n set tileType : 18");
+				printf("\n set tileType : 18 ");
 			}
 			else if (!strcmp(map[i], "19"))
 			{
 				tileType = 19;
-				printf("\n set tileType : 19");
+				printf("\n set tileType : 19 ");
 			}
 			else if (!strcmp(map[i], "20"))
 			{
 				tileType = 20;
-				printf("\n set tileType : 20");
+				printf("\n set tileType : 20 ");
 			}
 			else if (!strcmp(map[i], "21"))
 			{
 				tileType = 21;
-				printf("\n set tileType : 21");
+				printf("\n set tileType : 21 ");
 			}
 			else if (!strcmp(map[i], "22"))
 			{
 				tileType = 22;
-				printf("\n set tileType : 22");
+				printf("\n set tileType : 22 ");
 			}
 
-			printf("\nready to set tiles");
 			(tiles + i)->mBox.x = x;
 			(tiles + i)->mBox.y = y;
 			(tiles + i)->mBox.w = TILE_WIDTH;
 			(tiles + i)->mBox.h = TILE_HEIGHT;
 			(tiles + i)->mType = tileType;
 
-			printf("tiles[%d] = %d\n", i, (tiles + i)->mType);
+			printf(" tiles[%d] = %d\n", i, (tiles + i)->mType);
 			x += TILE_WIDTH;
 
 			if (x >= LEVEL_WIDTH)
@@ -881,18 +880,17 @@ bool setTiles(_LTile *tiles)
 				x = 0;
 				y += TILE_HEIGHT;
 			}
-
 		}
 	}
 	printf("\n Finish setting tiles successfully");
 	fclose(fp);
 	return loaded;
 }
-bool touchesWall(SDL_Rect box, _LTile* tiles)
+bool touchesWall(SDL_Rect box, _LTile* tiles) //벽타일과 충돌하는지 검사
 {
 	for (int i = 0; i < TOTAL_TILES; i++)
 	{
-		if (((tiles + i)->mType >= 5) && ((tiles + i)->mType <= 22))
+		if (((tiles + i)->mType >= 6) && ((tiles + i)->mType <= 22))
 		{
 			if (checkCollision(box, (tiles + i)->mBox))
 			{
@@ -902,4 +900,68 @@ bool touchesWall(SDL_Rect box, _LTile* tiles)
 		
 	}
 	return false;
+}
+
+void fileRead(char* buffer)
+{
+	char tempbuf[12000];
+	FILE* fp = fopen("level.map", "r");
+
+	fgets(tempbuf, sizeof(tempbuf), fp);
+
+	printf("%s\n", tempbuf);
+	fclose(fp);
+	strcpy(buffer, tempbuf);
+
+}
+int refToken(char* buf[], char* inp[])
+{
+	int i = 0;
+	char* ptr = strtok(buf, " ");
+
+
+	while (ptr != NULL)
+	{
+		inp[i] = ptr;
+		i++;
+		ptr = strtok(NULL, " ");
+	}
+
+
+	for (int i = 0; i < 12000; i++)
+	{
+		if (inp[i] != NULL)
+			printf("%s\n", inp[i]);
+	}
+	printf("\n\n\n");
+
+	if (!strcmp("02", inp[2]))
+	{
+		int temp = 2;
+		printf("%d\n", temp);
+	}
+
+
+	return i;
+}
+void selectionSort(int* pArr, int num)
+{
+	for (int i = 0; i < num; i++)
+	{
+		int n = i;
+		for (int j = (i + 1); j < num; j++)
+		{
+			if (*(pArr + j) < *(pArr + n))
+				n = j;
+		}
+		SWAP((pArr + i), (pArr + n));
+	}
+}
+
+void SWAP(int* pa, int* pb)
+{
+	int temp;
+	temp = *pa;
+	*pa = *pb;
+	*pb = temp;
 }
