@@ -210,7 +210,7 @@ int main()
 
 					//시간 표시를 위한 변수 설정
 					SDL_Color timeColor = { 255,255,255 };
-					int Ctime = 150 - (SDL_GetTicks() / 1000 - Stime);
+					int Ctime = 60 - (SDL_GetTicks() / 1000 - Stime);
 					sprintf(time, "%d", Ctime);
 
 					score = (SDL_GetTicks() - Stime * 1000); //시간(ms)가 곧 스코어가 됨
@@ -246,7 +246,7 @@ int main()
 					setCamera(&gPlayer, &Camera); //카메라 셋팅(보여지는 부분 설정)
 
 
-					if (checkCollision(gPlayer.mBox, tileSet[2].mBox)) //탈출구 타일과 충돌시 승리
+					if (checkCollision(gPlayer.mBox, tileSet[733].mBox)) //탈출구 타일과 충돌시 승리
 					{
 						printf("\nScore : %d", score);
 						game_end = true;
@@ -265,7 +265,7 @@ int main()
 					//랜더(타이머, 텍스트)
 					render(&gTimeText, gRenderer, 30, 30);
 					render(&gCurrentTime, gRenderer, 130, 30);
-					if (Ctime <= 140) //남은시간이 일정 이하일때 
+					if (Ctime <= 30) //남은시간이 일정 이하일때 
 					{
 						gCurrentText.mTexture = gTextTexture[1].mTexture;
 						gCurrentText.mHeight = gTextTexture[1].mHeight;
@@ -306,7 +306,7 @@ int main()
 					for (int i = 0; i < 5; i++)
 						render(&gCurrentDuck, gRenderer, gDuck[i].mBox.x - Camera.x, gDuck[i].mBox.y - Camera.y); //오리 무브
 					render(&gCurrentSurface, gRenderer, gPlayer.mBox.x - Camera.x, gPlayer.mBox.y - Camera.y); //플레이어 무브
-					render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1310 - Camera.x, gPlayer.mBox.y - 730 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
+					render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1350 - Camera.x, gPlayer.mBox.y - 670 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
 					
 
 					SDL_RenderPresent(gRenderer);  //랜더링 된걸 모두 업데이트 

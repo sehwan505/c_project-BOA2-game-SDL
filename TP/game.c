@@ -890,7 +890,7 @@ bool touchesWall(SDL_Rect box, _LTile* tiles) //벽타일과 충돌하는지 검사
 {
 	for (int i = 0; i < TOTAL_TILES; i++)
 	{
-		if (((tiles + i)->mType >= 5) && ((tiles + i)->mType <= 22))
+		if (((tiles + i)->mType >= 6) && ((tiles + i)->mType <= 22))
 		{
 			if (checkCollision(box, (tiles + i)->mBox))
 			{
