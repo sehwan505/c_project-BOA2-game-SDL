@@ -178,16 +178,17 @@ int main()
 					render(&gDuckTexture[5], gRenderer, 80, 80);
 					
 					SDL_Color ScoreColor = { 255,255,255 };
-					char temp[120];
+					char temp[1024];
 					char *leaderboard[120];
 					fileRead(temp);
-					refToken(temp, leaderboard);
-					selectionSort(leaderboard,120);
+				    int num = refToken(temp, leaderboard);
+					selectionSort(leaderboard, num);
 					for (int i = 0; i < 5; i++) { //스코어 로드
-						if (!loadFromRenderedText(&gScore[i], gRenderer, gFont, leaderboard[i], ScoreColor))
+						if (!loadFromRenderedText(&gScore[i], gRenderer, gFont, *(leaderboard+i), ScoreColor))
 						{
 							printf("스코어를 랜더할 수 없습니다! \n");
 						}
+						
 					}
 					for (int i = 0; i < 5; i++)
 					{
@@ -196,7 +197,7 @@ int main()
 
 					for (int i = 0; i < 5; i++)
 					{
-						render(&gLeaderBoard[i], gRenderer, 300, 75 * (i + 1));
+						render(&gScore[i], gRenderer, 300, 75 * (i + 1));
 					}//리더보드 스코어 생성
 					
 					
@@ -225,7 +226,7 @@ int main()
 					int Ctime = 60 - (SDL_GetTicks() / 1000 - Stime);
 					sprintf(time, "%d", Ctime);
 
-					score = (SDL_GetTicks() - Stime * 1000); //시간(ms)가 곧 스코어가 됨
+					score = 22222 + (SDL_GetTicks() - Stime * 1000); //시간(ms)에 22222 더한 값이 스코어가 됨
 
 					if (!loadFromRenderedText(&gCurrentTime, gRenderer, gFont, time, timeColor))
 					{
@@ -252,7 +253,6 @@ int main()
 						{
 							score /= 2; //진거니까 스코어 타노스
 							fileInput(score);
-							printf("\nScore : %d", score);
 							game_end = true;
 						}
 					}
@@ -261,7 +261,6 @@ int main()
 
 					if (checkCollision(gPlayer.mBox, tileSet[733].mBox)) //탈출구 타일과 충돌시 승리
 					{
-						printf("\nScore : %d", score);
 						fileInput(score);
 						game_end = true;
 					}
@@ -334,6 +333,7 @@ int main()
 				}//초당 60프레임 이상 랜더 방지
 			}
 		}
+		
 	}
 	close();
 	return 0;

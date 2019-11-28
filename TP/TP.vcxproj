@@ -24,8 +24,11 @@
     <ClInclude Include="timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="character.c" />
     <ClCompile Include="game.c" />
+    <ClCompile Include="init.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="score.c" />
     <ClCompile Include="timer.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

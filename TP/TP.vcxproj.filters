@@ -35,5 +35,14 @@
     <ClCompile Include="timer.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="character.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="score.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="init.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
