@@ -1,4 +1,4 @@
-#include <SDL.h>                  //SDL lib
+ï»¿#include <SDL.h>                  //SDL lib
 #include <SDL_image.h>            //SDL_image lib
 #include <SDL_ttf.h>              //SDL ttf lib
 #include <stdio.h>                //basic C lib
@@ -10,47 +10,47 @@
 #include "timer.h"
 
 
-bool init() //ÃÊ±âÈ­ ÇÔ¼ö
+bool init() //ì´ˆê¸°í™” í•¨ìˆ˜
 {
 	bool Sflag = true; //success flag
 
-	//SDL ÃÊ±âÈ­
+	//SDL ì´ˆê¸°í™”
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
-		printf("SDLÀ» ÃÊ±âÈ­ ÇÒ ¼ö ¾ø½À´Ï´Ù. : %s", SDL_GetError());
+		printf("SDLì„ ì´ˆê¸°í™” í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤. : %s", SDL_GetError());
 		Sflag = false;
 	}
 	else
 	{
-		//À©µµ¿ì »ı¼º
+		//ìœˆë„ìš° ìƒì„±
 		gWindow = SDL_CreateWindow("BoA2 Production", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
-			printf("À©µµ¿ì¸¦ »ı¼ºÇÒ ¼ö ¾ø½À´Ï´Ù. : %s", SDL_GetError());
+			printf("ìœˆë„ìš°ë¥¼ ìƒì„±í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤. : %s", SDL_GetError());
 			Sflag = false;
 		}
 		else
 		{
-			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED); //·£´õ·¯ »ı¼º
+			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED); //ëœë”ëŸ¬ ìƒì„±
 			if (gRenderer == NULL)
 			{
-				printf("·£´õ·¯ »ı¼º ½ÇÆĞ! : %s", SDL_GetError());
+				printf("ëœë”ëŸ¬ ìƒì„± ì‹¤íŒ¨! : %s", SDL_GetError());
 				Sflag = false;
 			}
 			else
 			{
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF); //·£´õ·¯¸¦ Èò»öÈ­¸éÀ¸·Î ±×¸®µµ·Ï ¼¼ÆÃ
+				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF); //ëœë”ëŸ¬ë¥¼ í°ìƒ‰í™”ë©´ìœ¼ë¡œ ê·¸ë¦¬ë„ë¡ ì„¸íŒ…
 
 
-				int imgFlags = IMG_INIT_PNG; //PNG ·Îµù ÇÃ·¡±×
+				int imgFlags = IMG_INIT_PNG; //PNG ë¡œë”© í”Œë˜ê·¸
 				if (!(IMG_Init(imgFlags) & imgFlags))
 				{
-					printf("SDLÀÌ¹ÌÁö ¸ğµâÀ» ÃÊ±âÈ­ ÇÒ ¼ö ¾ø½À´Ï´Ù! : %s", IMG_GetError());
+					printf("SDLì´ë¯¸ì§€ ëª¨ë“ˆì„ ì´ˆê¸°í™” í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤! : %s", IMG_GetError());
 					Sflag = false;
 				}
 				else if (TTF_Init() == -1)
 				{
-					printf("SDL_TTF ¸ğµâÀ» ÃÊ±âÈ­ ÇÒ ¼ö ¾ø½À´Ï´Ù! : %s", TTF_GetError());
+					printf("SDL_TTF ëª¨ë“ˆì„ ì´ˆê¸°í™” í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤! : %s", TTF_GetError());
 					Sflag = false;
 				}
 				else
@@ -62,13 +62,13 @@ bool init() //ÃÊ±âÈ­ ÇÔ¼ö
 			}
 		}
 	}
-	//ÇÃ·¹ÀÌ¾î&Å¸ÀÌ¸Ó º¯¼ö ÃÊ±âÈ­
+	//í”Œë ˆì´ì–´&íƒ€ì´ë¨¸ ë³€ìˆ˜ ì´ˆê¸°í™”
 
 	gPlayer.Player_HEIGHT = 78;
 	gPlayer.Player_WIDTH = 60;
 	gPlayer.Player_VEL = 3;
 
-	//±âº» ÇÃ·¹ÀÌ¾î À§Ä¡ ¼³Á¤
+	//ê¸°ë³¸ í”Œë ˆì´ì–´ ìœ„ì¹˜ ì„¤ì •
 	gPlayer.mBox.x = 0;
 	gPlayer.mBox.y = 0;
 	gPlayer.mBox.w = gPlayer.Player_WIDTH;
@@ -76,7 +76,7 @@ bool init() //ÃÊ±âÈ­ ÇÔ¼ö
 	gPlayer.mVelX = 0;
 	gPlayer.mVelY = 0;
 
-	//¿À¸® º¯¼ö ÃÊ±âÈ­
+	//ì˜¤ë¦¬ ë³€ìˆ˜ ì´ˆê¸°í™”
 	for (int i = 0; i < 5; i++)
 	{
 		gDuck[i].Player_HEIGHT = 75;
@@ -90,7 +90,7 @@ bool init() //ÃÊ±âÈ­ ÇÔ¼ö
 		gDuck[i].mBox.y = 0;
 	}
 
-	//Å¸ÀÌ¸Ó ±¸Á¶Ã¼ ¸É¹ö ÃÊ±âÈ­
+	//íƒ€ì´ë¨¸ êµ¬ì¡°ì²´ ë§´ë²„ ì´ˆê¸°í™”
 	timer.mStartTicks = 0;
 	timer.mPauseTicks = 0;
 	timer.mPaused = false;
@@ -99,87 +99,87 @@ bool init() //ÃÊ±âÈ­ ÇÔ¼ö
 	return Sflag;
 
 } 
-SDL_Surface* loadSurface(char* path)  //ÀÌ¹ÌÁö ·Îµå ÇÔ¼ö(ºñÆ®¸Ê ÀÌ¹ÌÁö)
+SDL_Surface* loadSurface(char* path)  //ì´ë¯¸ì§€ ë¡œë“œ í•¨ìˆ˜(ë¹„íŠ¸ë§µ ì´ë¯¸ì§€)
 {
-	//°æ·ÎÀÇ ÀÌ¹ÌÁö ·Îµå
+	//ê²½ë¡œì˜ ì´ë¯¸ì§€ ë¡œë“œ
 	SDL_Surface* loadedSurface = SDL_LoadBMP(path);
 	if (loadedSurface == NULL) {
-		printf("ÀÌ¹ÌÁö ·Îµå ½ÇÆĞ! : %s\n", SDL_GetError());
+		printf("ì´ë¯¸ì§€ ë¡œë“œ ì‹¤íŒ¨! : %s\n", SDL_GetError());
 	}
 	return loadedSurface;
 }
-SDL_Texture* loadTexture(char* path)  //ÀÌ¹ÌÁö ·Îµå&ÅØ½ºÃÄ º¯È¯ ÇÔ¼ö(PNG)
+SDL_Texture* loadTexture(char* path)  //ì´ë¯¸ì§€ ë¡œë“œ&í…ìŠ¤ì³ ë³€í™˜ í•¨ìˆ˜(PNG)
 {
 	SDL_Texture* newTexture = NULL;
 
 	SDL_Surface* loadedSurface = IMG_Load(path);
 	if (loadedSurface == NULL)
 	{
-		printf("ÀÌ¹ÌÁö ·Îµå ½ÇÆĞ! : %s\n", IMG_GetError()); //IMG¸ğµâ »ç¿ë½Ã SDL_GetError ´ë½Å IMG_GetError»ç¿ë
+		printf("ì´ë¯¸ì§€ ë¡œë“œ ì‹¤íŒ¨! : %s\n", IMG_GetError()); //IMGëª¨ë“ˆ ì‚¬ìš©ì‹œ SDL_GetError ëŒ€ì‹  IMG_GetErrorì‚¬ìš©
 	}
 	else
 	{
 		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
 		if (newTexture == NULL)
 		{
-			printf("ÅØ½ºÃÄ »ı¼º ½ÇÆĞ! : %s\n", SDL_GetError());
+			printf("í…ìŠ¤ì³ ìƒì„± ì‹¤íŒ¨! : %s\n", SDL_GetError());
 		}
 
-		SDL_FreeSurface(loadedSurface); //ÀÚ¿ø ¹İ³³
+		SDL_FreeSurface(loadedSurface); //ìì› ë°˜ë‚©
 	}
 	return newTexture;
 
 }
-bool loadMedia(_LTile *tiles[]) //°¢Á¾ ÀÌ¹ÌÁö ·Îµå
+bool loadMedia(_LTile *tiles[]) //ê°ì¢… ì´ë¯¸ì§€ ë¡œë“œ
 {
 	bool Sflag = true; //success flag
 
 	loadFromFile(&gMainplayerTexture[KEY_PRESS_SURFACE_DEFAULT], gRenderer, "images/player_front.png");
 	if (gMainplayerTexture[KEY_PRESS_SURFACE_DEFAULT].mTexture == NULL)
 	{
-		printf("¸ŞÀÎÇÃ·¹ÀÌ¾î µğÆúÆ® ÅØ½ºÃÄ ·Îµå ½ÇÆĞ!\n");
+		printf("ë©”ì¸í”Œë ˆì´ì–´ ë””í´íŠ¸ í…ìŠ¤ì³ ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gMainplayerTexture[KEY_PRESS_SURFACE_UP], gRenderer, "images/player_back.png");
 	if (gMainplayerTexture[KEY_PRESS_SURFACE_UP].mTexture == NULL)
 	{
-		printf("¸ŞÀÎÇÃ·¹ÀÌ¾î µğÆúÆ® ÅØ½ºÃÄ(up) ·Îµå ½ÇÆĞ!\n");
+		printf("ë©”ì¸í”Œë ˆì´ì–´ ë””í´íŠ¸ í…ìŠ¤ì³(up) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gMainplayerTexture[KEY_PRESS_SURFACE_DOWN], gRenderer, "images/player_front.png");
 	if (gMainplayerTexture[KEY_PRESS_SURFACE_DOWN].mTexture == NULL)
 	{
-		printf("¸ŞÀÎÇÃ·¹ÀÌ¾î µğÆúÆ® ÅØ½ºÃÄ(down) ·Îµå ½ÇÆĞ!\n");
+		printf("ë©”ì¸í”Œë ˆì´ì–´ ë””í´íŠ¸ í…ìŠ¤ì³(down) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gMainplayerTexture[KEY_PRESS_SURFACE_LEFT], gRenderer, "images/player_left.png");
 	if (gMainplayerTexture[KEY_PRESS_SURFACE_LEFT].mTexture == NULL)
 	{
-		printf("¸ŞÀÎÇÃ·¹ÀÌ¾î µğÆúÆ® ÅØ½ºÃÄ(left) ·Îµå ½ÇÆĞ!\n");
+		printf("ë©”ì¸í”Œë ˆì´ì–´ ë””í´íŠ¸ í…ìŠ¤ì³(left) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gMainplayerTexture[KEY_PRESS_SURFACE_RIGHT], gRenderer, "images/player_right.png");
 	if (gMainplayerTexture[KEY_PRESS_SURFACE_RIGHT].mTexture == NULL)
 	{
-		printf("¸ŞÀÎÇÃ·¹ÀÌ¾î µğÆúÆ® ÅØ½ºÃÄ(right) ·Îµå ½ÇÆĞ!\n");
+		printf("ë©”ì¸í”Œë ˆì´ì–´ ë””í´íŠ¸ í…ìŠ¤ì³(right) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gMainplayerTexture[KEY_PRESS_SURFACE_O], gRenderer, "images/duck_insane.png");
 	if (gMainplayerTexture[KEY_PRESS_SURFACE_O].mTexture == NULL)
 	{
-		printf("¸ŞÀÎÇÃ·¹ÀÌ¾î µğÆúÆ® ÅØ½ºÃÄ(insane) ·Îµå ½ÇÆĞ!\n");
+		printf("ë©”ì¸í”Œë ˆì´ì–´ ë””í´íŠ¸ í…ìŠ¤ì³(insane) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gMainplayerTexture[6], gRenderer, "images/player_left02.png");
 	if (gMainplayerTexture[6].mTexture == NULL)
 	{
-		printf("¸ŞÀÎÇÃ·¹ÀÌ¾î µğÆúÆ® ÅØ½ºÃÄ(left02) ·Îµå ½ÇÆĞ!\n");
+		printf("ë©”ì¸í”Œë ˆì´ì–´ ë””í´íŠ¸ í…ìŠ¤ì³(left02) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gMainplayerTexture[7], gRenderer, "images/player_right02.png");
 	if (gMainplayerTexture[7].mTexture == NULL)
 	{
-		printf("¸ŞÀÎÇÃ·¹ÀÌ¾î µğÆúÆ® ÅØ½ºÃÄ(right02) ·Îµå ½ÇÆĞ!\n");
+		printf("ë©”ì¸í”Œë ˆì´ì–´ ë””í´íŠ¸ í…ìŠ¤ì³(right02) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 
@@ -187,49 +187,49 @@ bool loadMedia(_LTile *tiles[]) //°¢Á¾ ÀÌ¹ÌÁö ·Îµå
 	loadFromFile(&gDuckTexture[0], gRenderer, "images/duck_front.png");
 	if (gDuckTexture[0].mTexture == NULL)
 	{
-		printf("¿À¸®(µğÆúÆ®) ·Îµå ½ÇÆĞ!\n");
+		printf("ì˜¤ë¦¬(ë””í´íŠ¸) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gDuckTexture[1], gRenderer, "images/duck_back.png");
 	if (gDuckTexture[1].mTexture == NULL)
 	{
-		printf("¿À¸®(µÚ) ·Îµå ½ÇÆĞ!\n");
+		printf("ì˜¤ë¦¬(ë’¤) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gDuckTexture[2], gRenderer, "images/duck_front.png");
 	if (gDuckTexture[2].mTexture == NULL)
 	{
-		printf("¿À¸®(¾Õ) ·Îµå ½ÇÆĞ!\n");
+		printf("ì˜¤ë¦¬(ì•) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gDuckTexture[3], gRenderer, "images/duck_left.png");
 	if (gDuckTexture[3].mTexture == NULL)
 	{
-		printf("¿À¸®(left) ·Îµå ½ÇÆĞ!\n");
+		printf("ì˜¤ë¦¬(left) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gDuckTexture[4], gRenderer, "images/duck_right.png");
 	if (gDuckTexture[4].mTexture == NULL)
 	{
-		printf("¿À¸®(right) ·Îµå ½ÇÆĞ!\n");
+		printf("ì˜¤ë¦¬(right) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gDuckTexture[5], gRenderer, "images/duck_insane.png");
 	if (gDuckTexture[5].mTexture == NULL)
 	{
-		printf("¿À¸®(insane) ·Îµå ½ÇÆĞ!\n");
+		printf("ì˜¤ë¦¬(insane) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gDuckTexture[6], gRenderer, "images/duck_left_02.png");
 	if (gDuckTexture[6].mTexture == NULL)
 	{
-		printf("¿À¸®(left02) ·Îµå ½ÇÆĞ!\n");
+		printf("ì˜¤ë¦¬(left02) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	loadFromFile(&gDuckTexture[7], gRenderer, "images/duck_right_02.png");
 	if (gDuckTexture[7].mTexture == NULL)
 	{
-		printf("¿À¸®(right02) ·Îµå ½ÇÆĞ!\n");
+		printf("ì˜¤ë¦¬(right02) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 
@@ -237,85 +237,85 @@ bool loadMedia(_LTile *tiles[]) //°¢Á¾ ÀÌ¹ÌÁö ·Îµå
 	loadFromFile(&gSightLimiter, gRenderer, "images/SightLimiter.png");
 	if (gSightLimiter.mTexture == NULL)
 	{
-		printf("»çÀÌÆ®¸®¹ÌÅÍ ·Îµå ½ÇÆĞ!\n");
+		printf("ì‚¬ì´íŠ¸ë¦¬ë¯¸í„° ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 	gLetterbox = loadTexture("images/Lbox.png");
 	if (gLetterbox == NULL)
 	{
-		printf("ÅØ½ºÃÄÀÌ¹ÌÁö(gLetterbox) ·Îµå ½ÇÆĞ!\n");
+		printf("í…ìŠ¤ì³ì´ë¯¸ì§€(gLetterbox) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 
 	gMinimap = loadTexture("images/minimap.png");
 	if (gMinimap == NULL)
 	{
-		printf("ÅØ½ºÃÄÀÌ¹ÌÁö(gMinimap) ·Îµå ½ÇÆĞ!\n");
+		printf("í…ìŠ¤ì³ì´ë¯¸ì§€(gMinimap) ë¡œë“œ ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
 
-	// ÆùÆ® ºÒ·¯¿È
+	// í°íŠ¸ ë¶ˆëŸ¬ì˜´
 	gFont = TTF_OpenFont("korean.ttf", 28);
 	if (gFont == NULL)
 	{
-		printf("ÆùÆ® ·Îµå ½ÇÆĞ! : %s", TTF_GetError());
+		printf("í°íŠ¸ ë¡œë“œ ì‹¤íŒ¨! : %s", TTF_GetError());
 		Sflag = false;
 	}
 	else
 	{
 		SDL_Color textColor = { 255,255,255 };
 
-		if (!loadFromRenderedText(&gTextTexture[0], gRenderer, gFont, "¿À¸®¸¦ ÇÇÇØ »ì¾Æ³²À¸¼¼¿ä!", textColor))
+		if (!loadFromRenderedText(&gTextTexture[0], gRenderer, gFont, "ì˜¤ë¦¬ë¥¼ í”¼í•´ ì‚´ì•„ë‚¨ìœ¼ì„¸ìš”!", textColor))
 		{
-			printf("ÅØ½ºÃÄ ·£´õ ½ÇÆĞ!");
+			printf("í…ìŠ¤ì³ ëœë” ì‹¤íŒ¨!");
 			Sflag = false;
 		}
 		if (!loadFromRenderedText(&gTimeText, gRenderer, gFont, "Time :", textColor))
 		{
-			printf("Å¸ÀÌ¸Ó¸¦ ·£´õÇÒ ¼ö ¾ø½À´Ï´Ù! \n");
+			printf("íƒ€ì´ë¨¸ë¥¼ ëœë”í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤! \n");
 		}
-		if (!loadFromRenderedText(&gLeaderBoard[0], gRenderer, gFont, "1À§ : ", textColor))
+		if (!loadFromRenderedText(&gLeaderBoard[0], gRenderer, gFont, "1ìœ„ : ", textColor))
 		{
-			printf("¸®´õº¸µå ·£´õ ½ÇÆĞ!");
+			printf("ë¦¬ë”ë³´ë“œ ëœë” ì‹¤íŒ¨!");
 			Sflag = false;
 		}
-		if (!loadFromRenderedText(&gLeaderBoard[1], gRenderer, gFont, "2À§ : ", textColor))
+		if (!loadFromRenderedText(&gLeaderBoard[1], gRenderer, gFont, "2ìœ„ : ", textColor))
 		{
-			printf("¸®´õº¸µå ·£´õ ½ÇÆĞ!");
+			printf("ë¦¬ë”ë³´ë“œ ëœë” ì‹¤íŒ¨!");
 			Sflag = false;
 		}
-		if (!loadFromRenderedText(&gLeaderBoard[2], gRenderer, gFont, "3À§ : ", textColor))
+		if (!loadFromRenderedText(&gLeaderBoard[2], gRenderer, gFont, "3ìœ„ : ", textColor))
 		{
-			printf("¸®´õº¸µå ·£´õ ½ÇÆĞ!");
+			printf("ë¦¬ë”ë³´ë“œ ëœë” ì‹¤íŒ¨!");
 			Sflag = false;
 		}
-		if (!loadFromRenderedText(&gLeaderBoard[3], gRenderer, gFont, "4À§ : ", textColor))
+		if (!loadFromRenderedText(&gLeaderBoard[3], gRenderer, gFont, "4ìœ„ : ", textColor))
 		{
-			printf("¸®´õº¸µå ·£´õ ½ÇÆĞ!");
+			printf("ë¦¬ë”ë³´ë“œ ëœë” ì‹¤íŒ¨!");
 			Sflag = false;
 		}
-		if (!loadFromRenderedText(&gLeaderBoard[4], gRenderer, gFont, "5À§ : ", textColor))
+		if (!loadFromRenderedText(&gLeaderBoard[4], gRenderer, gFont, "5ìœ„ : ", textColor))
 		{
-			printf("¸®´õº¸µå ·£´õ ½ÇÆĞ!");
+			printf("ë¦¬ë”ë³´ë“œ ëœë” ì‹¤íŒ¨!");
 			Sflag = false;
 		}
 
-		if (!loadFromRenderedText(&gStartText, gRenderer, gFont, "EnterÅ°¸¦ ´­·¯ °ÔÀÓÀ» ½ÃÀÛÇÏ¼¼¿ä", textColor))
+		if (!loadFromRenderedText(&gStartText, gRenderer, gFont, "Enterí‚¤ë¥¼ ëˆŒëŸ¬ ê²Œì„ì„ ì‹œì‘í•˜ì„¸ìš”", textColor))
 		{
-			printf("½ºÅ¸Æ®ÅØ½ºÆ® ·£´õ ½ÇÆĞ!");
+			printf("ìŠ¤íƒ€íŠ¸í…ìŠ¤íŠ¸ ëœë” ì‹¤íŒ¨!");
 			Sflag = false;
 		}
 		
 		textColor.g = 0;
 		textColor.b = 0;
-		if (!loadFromRenderedText(&gTextTexture[1], gRenderer, gFont, "½Ã°£ÀÌ ¾ó¸¶ ³²Áö ¾Ê¾Æ ¿À¸®ÀÇ ¸ğ½ÀÀÌ ÈäÆøÇØÁı´Ï´Ù!", textColor))
+		if (!loadFromRenderedText(&gTextTexture[1], gRenderer, gFont, "ì‹œê°„ì´ ì–¼ë§ˆ ë‚¨ì§€ ì•Šì•„ ì˜¤ë¦¬ì˜ ëª¨ìŠµì´ í‰í­í•´ì§‘ë‹ˆë‹¤!", textColor))
 		{
-			printf("ÅØ½ºÃÄ ·£´õ ½ÇÆĞ!");
+			printf("í…ìŠ¤ì³ ëœë” ì‹¤íŒ¨!");
 			Sflag = false;
 		}
 	}
 
-	//Å¸ÀÏ ÅØ½ºÃÄ ¿ÀÇÂ
+	//íƒ€ì¼ í…ìŠ¤ì³ ì˜¤í”ˆ
 	loadFromFile(&gTileTexture[0], gRenderer, "images/tiles/00.png");
 	loadFromFile(&gTileTexture[1], gRenderer, "images/tiles/01.png");
 	loadFromFile(&gTileTexture[2], gRenderer, "images/tiles/02.png");
@@ -342,20 +342,20 @@ bool loadMedia(_LTile *tiles[]) //°¢Á¾ ÀÌ¹ÌÁö ·Îµå
 	for (int i = 0; i < 23; i++) {
 		if (gTileTexture[i].mTexture == NULL)
 		{
-			printf("Å¸ÀÏ ÅØ½ºÃÄ(%d) ·Îµå ½ÇÆĞ! \n", i);
+			printf("íƒ€ì¼ í…ìŠ¤ì³(%d) ë¡œë“œ ì‹¤íŒ¨! \n", i);
 			Sflag = false;
 			break;
 		}
 	}
 	if (!setTiles(tiles))
 	{
-		printf("Å¸ÀÏ¼Â ¼³Á¤ ½ÇÆĞ!\n");
+		printf("íƒ€ì¼ì…‹ ì„¤ì • ì‹¤íŒ¨!\n");
 		Sflag = false;
 	}
-	//À§¿Í °°ÀÌ ¿øÇÏ´Â ÀÌ¹ÌÁö¸¦ Æ÷ÀÎÅÍ¿¡ ¹ÚÀºÈÄ ·£´õ·¯¿¡ °¢°¢ ¸ÅÄ¡½ÃÄÑ¼­ ¾÷µ¥ÀÌÆ® 
+	//ìœ„ì™€ ê°™ì´ ì›í•˜ëŠ” ì´ë¯¸ì§€ë¥¼ í¬ì¸í„°ì— ë°•ì€í›„ ëœë”ëŸ¬ì— ê°ê° ë§¤ì¹˜ì‹œì¼œì„œ ì—…ë°ì´íŠ¸ 
 	return Sflag;
 }
-void close() //ÀÚ¿ø ¹İ³³ & ¶óÀÌºê·¯¸® Á¾·á
+void close() //ìì› ë°˜ë‚© & ë¼ì´ë¸ŒëŸ¬ë¦¬ ì¢…ë£Œ
 {
 	SDL_DestroyTexture(gTexture);
 	gTexture = NULL;
@@ -373,34 +373,34 @@ void close() //ÀÚ¿ø ¹İ³³ & ¶óÀÌºê·¯¸® Á¾·á
 	for (int i = 0; i < 12; i++)
 		lfree(&gTileTexture[i]);
 	lfree(&gFont);
-	//¼­ÇÇ½º ÃÊ±âÈ­
+	//ì„œí”¼ìŠ¤ ì´ˆê¸°í™”
 	lfree(&gCurrentSurface);
 
 
 	TTF_CloseFont(gFont);
 	gFont = NULL;
-	//À©µµ¿ì ´İ±â
+	//ìœˆë„ìš° ë‹«ê¸°
 	SDL_DestroyRenderer(gRenderer);
 	gRenderer = NULL;
 	SDL_DestroyWindow(gWindow);
 	gWindow = NULL;
 
-	//sdl ¶óÀÌºê·¯¸® ´İ±â
+	//sdl ë¼ì´ë¸ŒëŸ¬ë¦¬ ë‹«ê¸°
 	SDL_Quit();
 	IMG_Quit();
 	TTF_Quit();
 }
-bool loadFromFile(_LTexture* LT, SDL_Renderer* Renderer, char* path) //PNG·ÎµåÇØ¼­ ÅØ½ºÃÄ »ı¼º(ÀÌ¹ÌÁö Å©±âµµ ÀúÀå) -> ÅØ½ºÃÄ ±¸Á¶Ã¼·Î ¹İÈ¯
+bool loadFromFile(_LTexture* LT, SDL_Renderer* Renderer, char* path) //PNGë¡œë“œí•´ì„œ í…ìŠ¤ì³ ìƒì„±(ì´ë¯¸ì§€ í¬ê¸°ë„ ì €ì¥) -> í…ìŠ¤ì³ êµ¬ì¡°ì²´ë¡œ ë°˜í™˜
 {
 	lfree(LT);
 
-	SDL_Texture* newTexture = NULL;  //ÅØ½ºÃÄ Æ÷ÀÎÅÍ
+	SDL_Texture* newTexture = NULL;  //í…ìŠ¤ì³ í¬ì¸í„°
 
 	SDL_Surface* loadedSurface = IMG_Load(path);
 
 	if (loadedSurface == NULL)
 	{
-		printf("ÀÌ¹ÌÁö ·Îµå ½ÇÆĞ! : %s", IMG_GetError());
+		printf("ì´ë¯¸ì§€ ë¡œë“œ ì‹¤íŒ¨! : %s", IMG_GetError());
 	}
 	else
 	{
@@ -408,7 +408,7 @@ bool loadFromFile(_LTexture* LT, SDL_Renderer* Renderer, char* path) //PNG·ÎµåÇØ
 		newTexture = SDL_CreateTextureFromSurface(Renderer, loadedSurface);
 		if (newTexture == NULL)
 		{
-			printf("ÅØ½ºÃÄ »ı¼º ½ÇÆĞ! : %s", SDL_GetError());
+			printf("í…ìŠ¤ì³ ìƒì„± ì‹¤íŒ¨! : %s", SDL_GetError());
 		}
 		else
 		{
@@ -421,7 +421,7 @@ bool loadFromFile(_LTexture* LT, SDL_Renderer* Renderer, char* path) //PNG·ÎµåÇØ
 	LT->mTexture = newTexture;
 	return LT->mTexture != NULL;
 }
-void lfree(_LTexture* LT) //ÅØ½ºÃÄ ±¸Á¶Ã¼¿¡ Á¢±ÙÇØ¼­ ³Î·Î ÃÊ±âÈ­
+void lfree(_LTexture* LT) //í…ìŠ¤ì³ êµ¬ì¡°ì²´ì— ì ‘ê·¼í•´ì„œ ë„ë¡œ ì´ˆê¸°í™”
 {
 	if (LT != NULL)
 	{
@@ -434,7 +434,7 @@ void lfree(_LTexture* LT) //ÅØ½ºÃÄ ±¸Á¶Ã¼¿¡ Á¢±ÙÇØ¼­ ³Î·Î ÃÊ±âÈ­
 		}
 	}
 }
-void render(_LTexture* LT, SDL_Renderer* Renderer, int x, int y) //·£´õ¸µ
+void render(_LTexture* LT, SDL_Renderer* Renderer, int x, int y) //ëœë”ë§
 {
 	SDL_Rect renderQuad = { x,y,LT->mWidth,LT->mHeight };
 	SDL_RenderCopy(Renderer, LT->mTexture, NULL, &renderQuad);
@@ -442,19 +442,19 @@ void render(_LTexture* LT, SDL_Renderer* Renderer, int x, int y) //·£´õ¸µ
 bool loadFromRenderedText(_LTexture* LT, SDL_Renderer* Renderer, TTF_Font* Font, char* stringText, SDL_Color textColor)
 {
 	lfree(LT);
-	unsigned short unicode[128]; //À¯´ÏÄÚµå ¹è¿­ ¸¸µé¾î¼­
-	han2unicode(stringText, unicode); //½ºÆ®¸µÀ» À¯´ÏÄÚµå·Î º¯È¯
-	SDL_Surface* textSurface = TTF_RenderUNICODE_Solid(Font, unicode, textColor); //¼­ÇÇ½º Æ÷ÀÎÅÍ¿¡ ÆùÆ® ·£´õÇÔ¼ö³Ö±â
+	unsigned short unicode[128]; //ìœ ë‹ˆì½”ë“œ ë°°ì—´ ë§Œë“¤ì–´ì„œ
+	han2unicode(stringText, unicode); //ìŠ¤íŠ¸ë§ì„ ìœ ë‹ˆì½”ë“œë¡œ ë³€í™˜
+	SDL_Surface* textSurface = TTF_RenderUNICODE_Solid(Font, unicode, textColor); //ì„œí”¼ìŠ¤ í¬ì¸í„°ì— í°íŠ¸ ëœë”í•¨ìˆ˜ë„£ê¸°
 	if (textSurface == NULL)
 	{
-		printf("ÅØ½ºÃÄ ¼­ÇÇ½º ·£´õ ½ÇÆĞ! : %s\n", TTF_GetError());
+		printf("í…ìŠ¤ì³ ì„œí”¼ìŠ¤ ëœë” ì‹¤íŒ¨! : %s\n", TTF_GetError());
 	}
 	else
 	{
 		LT->mTexture = SDL_CreateTextureFromSurface(Renderer, textSurface);
 		if (LT->mTexture == NULL)
 		{
-			printf("ÅØ½ºÃÄ »ı¼º ½ÇÆĞ : %s", SDL_GetError());
+			printf("í…ìŠ¤ì³ ìƒì„± ì‹¤íŒ¨ : %s", SDL_GetError());
 		}
 		else
 		{
@@ -464,8 +464,8 @@ bool loadFromRenderedText(_LTexture* LT, SDL_Renderer* Renderer, TTF_Font* Font,
 		SDL_FreeSurface(textSurface);
 	}
 	return LT->mTexture != NULL;
-}//ÅØ½ºÃÄ ·Îµù
-void V_handleEvent(_LPlayer* LP, SDL_Event* e) //Å°ÀÔ·Â¿¡ µû¸¥ ÁÂÇ¥Á¶Àı
+}//í…ìŠ¤ì³ ë¡œë”©
+void V_handleEvent(_LPlayer* LP, SDL_Event* e) //í‚¤ì…ë ¥ì— ë”°ë¥¸ ì¢Œí‘œì¡°ì ˆ
 {
 	if (e->type == SDL_KEYDOWN && e->key.repeat == 0)
 	{
@@ -488,7 +488,7 @@ void V_handleEvent(_LPlayer* LP, SDL_Event* e) //Å°ÀÔ·Â¿¡ µû¸¥ ÁÂÇ¥Á¶Àı
 		}
 	}
 }
-void reverse_V_handleEvent(_LPlayer* LP, SDL_Event* e) //Å°ÀÔ·Â¿¡ µû¸¥ ÁÂÇ¥Á¶Àı
+void reverse_V_handleEvent(_LPlayer* LP, SDL_Event* e) //í‚¤ì…ë ¥ì— ë”°ë¥¸ ì¢Œí‘œì¡°ì ˆ
 {
 	if (e->type == SDL_KEYDOWN && e->key.repeat == 0)
 	{
@@ -511,7 +511,7 @@ void reverse_V_handleEvent(_LPlayer* LP, SDL_Event* e) //Å°ÀÔ·Â¿¡ µû¸¥ ÁÂÇ¥Á¶Àı
 		}
 	}
 }
-void move(_LPlayer* LP, _LTile *tiles) //ÇÃ·¹ÀÌ¾î ¹«ºê & Ãæµ¹Ã³¸®
+void move(_LPlayer* LP, _LTile *tiles) //í”Œë ˆì´ì–´ ë¬´ë¸Œ & ì¶©ëŒì²˜ë¦¬
 {
 	LP->mBox.x += LP->mVelX;
 
@@ -528,7 +528,7 @@ void move(_LPlayer* LP, _LTile *tiles) //ÇÃ·¹ÀÌ¾î ¹«ºê & Ãæµ¹Ã³¸®
 		LP->mBox.y -= LP->mVelY;
 	}
 }
-void setCamera(_LPlayer* LP, SDL_Rect* camera) //Ä«¸Ş¶ó ¼ÂÆÃ
+void setCamera(_LPlayer* LP, SDL_Rect* camera) //ì¹´ë©”ë¼ ì…‹íŒ…
 {
 	camera->x = (getPosX(LP) + LP->Player_WIDTH / 2) - SCREEN_WIDTH / 2;
 	camera->y = (getPosY(LP) + LP->Player_HEIGHT / 2) - (SCREEN_HEIGHT * 2 / 3) / 2;
@@ -550,7 +550,7 @@ void setCamera(_LPlayer* LP, SDL_Rect* camera) //Ä«¸Ş¶ó ¼ÂÆÃ
 		camera->y = LEVEL_HEIGHT - camera->h;
 	}
 }
-void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time) //ÅØ½ºÃÄ ÇÚµé¸µ
+void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time) //í…ìŠ¤ì³ í•¸ë“¤ë§
 {
 	if (e->type == SDL_KEYDOWN)
 	{
@@ -607,7 +607,7 @@ void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time) //ÅØ½ºÃÄ
 		}
 	}
 }
-void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time) //ÅØ½ºÃÄ ÇÚµé¸µ(¿À¸®)
+void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time) //í…ìŠ¤ì³ í•¸ë“¤ë§(ì˜¤ë¦¬)
 {
 	if (e->type == SDL_KEYDOWN)
 	{
@@ -675,13 +675,13 @@ void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
 
 	}
 }
-bool checkCollision(SDL_Rect a, SDL_Rect b) //Ãæµ¹ÆÇÁ¤ ÇÔ¼ö(Ãæµ¹-> return false)
+bool checkCollision(SDL_Rect a, SDL_Rect b) //ì¶©ëŒíŒì • í•¨ìˆ˜(ì¶©ëŒ-> return false)
 {
 	int leftA, leftB;
 	int rightA, rightB;
 	int topA, topB;
 	int botA, botB;
-	//Ãæµ¹ÆÇÁ¤ »ç°¢Çü º¯¼ö
+	//ì¶©ëŒíŒì • ì‚¬ê°í˜• ë³€ìˆ˜
 
 	leftA = a.x;
 	rightA = a.x + a.w;
@@ -712,15 +712,15 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) //Ãæµ¹ÆÇÁ¤ ÇÔ¼ö(Ãæµ¹-> return false)
 
 	return true;
 }
-int getPosX(_LPlayer* LP) //ÇöÀç ÇÃ·¹ÀÌ¾îÀÇ xÁÂÇ¥ ¹İÈ¯
+int getPosX(_LPlayer* LP) //í˜„ì¬ í”Œë ˆì´ì–´ì˜ xì¢Œí‘œ ë°˜í™˜
 {
 	return LP->mBox.x;
 }
-int getPosY(_LPlayer* LP) //ÇöÀç ÇÃ·¹ÀÌ¾îÀÇ yÁÂÇ¥ ¹İÈ¯
+int getPosY(_LPlayer* LP) //í˜„ì¬ í”Œë ˆì´ì–´ì˜ yì¢Œí‘œ ë°˜í™˜
 {
 	return LP->mBox.y;
 }
-bool setTiles(_LTile *tiles) //¸ÊÆÄÀÏ ÀĞ¾î¼­ Å¸ÀÏ¼ÂÆÃ
+bool setTiles(_LTile *tiles) //ë§µíŒŒì¼ ì½ì–´ì„œ íƒ€ì¼ì…‹íŒ…
 {
 	bool loaded = true;
 	int x = 0, y = 0, i = 0;
@@ -742,7 +742,7 @@ bool setTiles(_LTile *tiles) //¸ÊÆÄÀÏ ÀĞ¾î¼­ Å¸ÀÏ¼ÂÆÃ
 	}
 	if (fp == NULL)
 	{
-		printf("¸ÊÆÄÀÏ ·Îµå ½ÇÆĞ!\n");
+		printf("ë§µíŒŒì¼ ë¡œë“œ ì‹¤íŒ¨!\n");
 		loaded = false;
 	}
 	else
@@ -886,7 +886,7 @@ bool setTiles(_LTile *tiles) //¸ÊÆÄÀÏ ÀĞ¾î¼­ Å¸ÀÏ¼ÂÆÃ
 	fclose(fp);
 	return loaded;
 }
-bool touchesWall(SDL_Rect box, _LTile* tiles) //º®Å¸ÀÏ°ú Ãæµ¹ÇÏ´ÂÁö °Ë»ç
+bool touchesWall(SDL_Rect box, _LTile* tiles) //ë²½íƒ€ì¼ê³¼ ì¶©ëŒí•˜ëŠ”ì§€ ê²€ì‚¬
 {
 	for (int i = 0; i < TOTAL_TILES; i++)
 	{
@@ -901,15 +901,22 @@ bool touchesWall(SDL_Rect box, _LTile* tiles) //º®Å¸ÀÏ°ú Ãæµ¹ÇÏ´ÂÁö °Ë»ç
 	}
 	return false;
 }
+void fileInput(int inp) {
+	FILE* fp;
+	fp = fopen("score.txt", "a");
+	
+	fprintf(fp, " %d", inp);
+	
+	fclose(fp);
 
+}
 void fileRead(char* buffer)
 {
-	char tempbuf[12000];
-	FILE* fp = fopen("level.map", "r");
+	char tempbuf[120];
+	FILE* fp = fopen("score.txt", "r");
 
-	fgets(tempbuf, sizeof(tempbuf), fp);
+	fgets(tempbuf, sizeof(tempbuf),fp);
 
-	printf("%s\n", tempbuf);
 	fclose(fp);
 	strcpy(buffer, tempbuf);
 
@@ -927,35 +934,30 @@ int refToken(char* buf[], char* inp[])
 		ptr = strtok(NULL, " ");
 	}
 
-
-	for (int i = 0; i < 12000; i++)
-	{
-		if (inp[i] != NULL)
-			printf("%s\n", inp[i]);
-	}
-	printf("\n\n\n");
-
-	if (!strcmp("02", inp[2]))
-	{
-		int temp = 2;
-		printf("%d\n", temp);
-	}
-
-
 	return i;
 }
-void selectionSort(int* pArr, int num)
-{
+void selectionSort(char* pArr[], int num)
+{	
+	int temp[1024];
+	for (int j = 0; j < num; j++) {
+		temp[j] = atoi(*(pArr + j));
+	}
 	for (int i = 0; i < num; i++)
 	{
+		if (temp[i] == NULL)
+			return;
 		int n = i;
 		for (int j = (i + 1); j < num; j++)
 		{
-			if (*(pArr + j) < *(pArr + n))
+			if (temp[j] > temp[n])
 				n = j;
 		}
-		SWAP((pArr + i), (pArr + n));
+		SWAP((temp + i), (temp + n));
 	}
+	for (int k = 0; k < num; k++) {
+		sprintf(pArr[k], "%d", temp[k]);
+ 	}
+	
 }
 
 void SWAP(int* pa, int* pb)
