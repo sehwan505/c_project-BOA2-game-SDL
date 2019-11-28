@@ -10,6 +10,7 @@
 #include "timer.h"
 
 
+
 bool init() //초기화 함수
 {
 	bool Sflag = true; //success flag

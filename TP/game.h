@@ -35,49 +35,54 @@ typedef struct _LTile //타일 구조체
 	int mType;
 }_LTile;
 
-extern SDL_Renderer* gRenderer;     //랜더러 포인터
-extern SDL_Surface* loadSurface(char* path); //경로에 있는 서피스 로드 함수
-extern SDL_Texture* loadTexture(char* path); //위와 같은 기능 ( 서피스보다 성능 좋음)
-extern SDL_Window* gWindow; //랜더링 윈도우 포인터
-extern SDL_Surface* gScreenSurface; //스크린서피스 포인터
-extern SDL_Texture* gTexture;       //기본 텍스쳐 포인터
-extern SDL_Texture* gLetterbox ;     //왼쪽아래 메시지박스 포인터
-extern SDL_Texture* gMinimap;       //오른쪽 아래 미니맵 포인터
-extern TTF_Font* gFont;  //기본 폰트 포인터
+extern SDL_Renderer* gRenderer;									 //랜더러 포인터
+extern SDL_Surface* loadSurface(char* path);					 //경로에 있는 서피스 로드 함수
+extern SDL_Texture* loadTexture(char* path);					 //위와 같은 기능 ( 서피스보다 성능 좋음)
+extern SDL_Window* gWindow;										 //랜더링 윈도우 포인터
+extern SDL_Surface* gScreenSurface;								 //스크린서피스 포인터
+extern SDL_Texture* gTexture;									 //기본 텍스쳐 포인터
+extern SDL_Texture* gLetterbox ;								 //왼쪽아래 메시지박스 포인터
+extern SDL_Texture* gMinimap;									 //오른쪽 아래 미니맵 포인터
+extern TTF_Font* gFont;											 //기본 폰트 포인터
 
-extern const int LEVEL_WIDTH ;  //레벨층 가로
-extern const int LEVEL_HEIGHT; //레벨층 세로
+//레벨층,스크린 관련 상수
+extern const int LEVEL_WIDTH ;									 //레벨층 가로
+extern const int LEVEL_HEIGHT;									 //레벨층 세로
 
-extern const int SCREEN_WIDTH ; //스크린 가로
-extern const int SCREEN_HEIGHT ; //스크린 세로
+extern const int SCREEN_WIDTH ;									 //스크린 가로
+extern const int SCREEN_HEIGHT ;								 //스크린 세로
 
-extern const int SCREEN_FPS ;     //스크린 프레임
-extern const int SCREEN_TICK_PER_FRAME ; //틱당 프레임
+extern const int SCREEN_FPS ;								     //스크린 프레임
+extern const int SCREEN_TICK_PER_FRAME ;						 //틱당 프레임
 
 //타일 상수
-extern const int TILE_WIDTH;//타일 가로크기
-extern const int TILE_HEIGHT;//타일 세로크기
-extern const int TOTAL_TILES;
-extern const int TOTAL_TILE_SPRITES;
+extern const int TILE_WIDTH;									 //타일 가로크기
+extern const int TILE_HEIGHT;									 //타일 세로크기
+extern const int TOTAL_TILES;									 //총 타일 갯수
+extern const int TOTAL_TILE_SPRITES;							 //총 타일 스프라이트 갯수
+
 
 //텍스쳐 등 구현할 구조체들 정의
+extern struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL+2];	//메인캐릭터 텍스쳐
+extern struct _LTexture gDuckTexture[KEY_PRESS_SURFACE_TOTAL+2];		//오리 텍스쳐
+extern struct _LTexture gCurrentDuck;									//현재 오리 모습
+extern struct _LTexture gCurrentSurface;								//현재 표시되는 서피스
 
-extern struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL+2]; //메인캐릭터 텍스쳐
-extern struct _LTexture gDuckTexture[KEY_PRESS_SURFACE_TOTAL+2];
-extern struct _LTexture gCurrentDuck;
-extern struct _LTexture gTimeText;
-extern struct _LTexture gCurrentTime;
-extern struct _LTexture gSightLimiter;   //시야 가리기
-extern struct _LTexture gTextTexture[2]; //택스트도 구조체 배열을 통하여 미리 집어넣어놓고, 이벤트에 따라서 꺼내어 랜더링 할 수 있다.
-extern struct _LTexture gCurrentSurface; //현재 표시되는 서피스
-extern struct _LTexture gCurrentText;    //현재 표시되는 텍스트
-extern struct _LTexture gTileTexture[23];//타일셋 텍스처
-extern struct _LTexture gLeaderBoard[5];
-extern struct _LTexture gScore[5];
-extern struct _LTexture gStartText;
-extern struct _LPlayer gPlayer;
-extern struct _LPlayer gDuck[5];
-extern struct _LTimer timer;
+extern struct _LTexture gTimeText;										//타임 텍스트(Time : )
+extern struct _LTexture gCurrentTime;									//현재 시각 텍스쳐
+extern struct _LTexture gSightLimiter;									//시야 가리기
+extern struct _LTexture gTextTexture[2];								//택스트도 구조체 배열을 통하여 미리 집어넣어놓고, 이벤트에 따라서 꺼내어 랜더링 할 수 있다.
+extern struct _LTexture gCurrentText;								    //현재 표시되는 텍스트
+extern struct _LTexture gTileTexture[23];								//타일셋 텍스처
+
+extern struct _LTexture gLeaderBoard[5];								//리더보드 텍스트
+extern struct _LTexture gScore[5];										//스코어 텍스트
+extern struct _LTexture gStartText;										//스타트 텍스트
+
+extern struct _LPlayer gPlayer;											//플레이어 구조체
+extern struct _LPlayer gDuck[5];										//오리 구조체
+
+extern struct _LTimer timer;											//타이머 구조체
 
 
 //함수 정의
@@ -105,6 +110,6 @@ void setCamera(_LPlayer* , SDL_Rect* );
 //fileIO
 void fileRead(char* buffer);
 int refToken(char* buf[], char *inp[]);
-void selectionSort(int *pArr, int num);
+void selectionSort(char* pArr[], int num);
 void SWAP(int *pa, int *pb);
 void fileInput(int inp);

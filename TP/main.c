@@ -8,68 +8,73 @@
 #include "game.h"
 #include "timer.h"
 
-SDL_Renderer* gRenderer = NULL;     //랜더러 포인터
-SDL_Surface* loadSurface(char* path); //경로에 있는 서피스 로드 함수
-SDL_Texture* loadTexture(char* path); //위와 같은 기능 ( 서피스보다 성능 좋음)
-SDL_Window* gWindow = NULL; //랜더링 윈도우 포인터
-SDL_Surface* gScreenSurface = NULL; //스크린서피스 포인터
-SDL_Texture* gTexture = NULL;       //기본 텍스쳐 포인터
-SDL_Texture* gLetterbox = NULL;     //왼쪽아래 메시지박스 포인터
-SDL_Texture* gMinimap = NULL;       //오른쪽 아래 미니맵 포인터
-TTF_Font* gFont = NULL;  //기본 폰트 포인터
+/*
+main.c
+메인 루프 
+*/
 
-const int LEVEL_WIDTH = 2560;  //레벨층 가로
-const int LEVEL_HEIGHT = 1920; //레벨층 세로
+SDL_Renderer* gRenderer = NULL;			     //랜더러 포인터
+SDL_Surface* loadSurface(char* path);		 //경로에 있는 서피스 로드 함수
+SDL_Texture* loadTexture(char* path);		 //위와 같은 기능 ( 서피스보다 성능 좋음)
+SDL_Window* gWindow = NULL;					 //랜더링 윈도우 포인터
+SDL_Surface* gScreenSurface = NULL;			 //스크린서피스 포인터
+SDL_Texture* gTexture = NULL;				 //기본 텍스쳐 포인터
+SDL_Texture* gLetterbox = NULL;				 //왼쪽아래 메시지박스 포인터
+SDL_Texture* gMinimap = NULL;				 //오른쪽 아래 미니맵 포인터
+TTF_Font* gFont = NULL;						 //기본 폰트 포인터
 
-const int SCREEN_WIDTH = 1280; //스크린 가로
-const int SCREEN_HEIGHT = 720; //스크린 세로
+const int LEVEL_WIDTH = 2560;				 //레벨층 가로
+const int LEVEL_HEIGHT = 1920;				 //레벨층 세로
 
-const int SCREEN_FPS = 60;     //스크린 프레임
-const int SCREEN_TICK_PER_FRAME = 17; //틱당 프레임
+const int SCREEN_WIDTH = 1280;				 //스크린 가로
+const int SCREEN_HEIGHT = 720;				 //스크린 세로
+
+const int SCREEN_FPS = 60;					 //스크린 프레임
+const int SCREEN_TICK_PER_FRAME = 17;		 //틱당 프레임
 
 //타일 상수
-const int TILE_WIDTH = 80;          //타일 가로크기
-const int TILE_HEIGHT = 80;         //타일 세로크기
-const int TOTAL_TILES = 768;        //총 타일 갯수 (32x24)
-const int TOTAL_TILE_SPRITES = 23;  //총 타일 스프라이트 갯수
+const int TILE_WIDTH = 80;					 //타일 가로크기
+const int TILE_HEIGHT = 80;					 //타일 세로크기
+const int TOTAL_TILES = 768;			 	 //총 타일 갯수 (32x24)
+const int TOTAL_TILE_SPRITES = 23;			 //총 타일 스프라이트 갯수
 
 //텍스쳐 등 구현할 구조체들 정의
 struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL+2]; //메인캐릭터 텍스쳐
-struct _LTexture gCurrentSurface; //현재 표시되는 서피스
-struct _LTexture gDuckTexture[KEY_PRESS_SURFACE_TOTAL+2];  //오리 텍스처
+struct _LTexture gCurrentSurface;								//현재 표시되는 서피스
+struct _LTexture gDuckTexture[KEY_PRESS_SURFACE_TOTAL+2];		//오리 텍스처
 struct _LTexture gCurrentDuck;
 
-struct _LTexture gTimeText;
-struct _LTexture gCurrentTime;
+struct _LTexture gTimeText;		   //타임 텍스트(Time : )
+struct _LTexture gCurrentTime;	   //현재 시각 텍스쳐
 struct _LTexture gSightLimiter;    //시야 가리기
 struct _LTexture gTextTexture[2];  //택스트도 구조체 배열을 통하여 미리 집어넣어놓고, 이벤트에 따라서 꺼내어 랜더링 할 수 있다
 struct _LTexture gCurrentText;     //현재 표시되는 텍스트
 
 struct _LTexture gTileTexture[23]; //타일셋 텍스처
-struct _LTexture gLeaderBoard[5];
-struct _LTexture gScore[5];
-struct _LTexture gStartText;
+struct _LTexture gLeaderBoard[5];  //리더보드 텍스트
+struct _LTexture gScore[5];		   //스코어 텍스트
+struct _LTexture gStartText;	   //스타트 텍스트
 
-struct _LPlayer gPlayer;
-struct _LPlayer gDuck[5];
+struct _LPlayer gPlayer;		   //플레이어 구조체
+struct _LPlayer gDuck[5];		   //오리 구조체
 
-struct _LTimer timer; 
+struct _LTimer timer;			   //타이머 구조체
 
 
-int main()
+int main() //main loop
 {
-	srand(time(NULL));
-	//SDL 모듈 초기화
-	if (!init())
+	srand(time(NULL)); //use rand()
+	
+	if (!init()) //SDL 모듈 초기화
 	{
 		printf("초기화 실패!\n");
 	}
 	else
 	{
-		char time[150];
-		_LTile tileSet[12000] = { 0, };
-		//미디어 로드
-		if (!loadMedia(tileSet))
+		char time[150]; //시각 표시용 char 배열
+		_LTile tileSet[12000] = { 0, }; //타일셋 배열
+		
+		if (!loadMedia(tileSet)) //미디어 로드
 		{
 			printf("Failed to load media!\n");
 		}
@@ -139,7 +144,7 @@ int main()
 						case SDLK_RETURN:
 							game_end = false;
 							break;
-						
+
 						default:
 							gCurrentText.mTexture = gTextTexture[0].mTexture;
 							gCurrentText.mHeight = gTextTexture[0].mHeight;
@@ -153,8 +158,8 @@ int main()
 					V_handleEvent(&gPlayer, &e); //키다운에 따른 이동 이벤트
 					for (int i = 0; i < 5; i++)
 						reverse_V_handleEvent(&gDuck[i], &e); //키다운에 따른 오리 이동 이벤트
-					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks() / 250);  //키다운에 따른 텍스쳐 변경
-					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, SDL_GetTicks());         //오리는 애니메이션 외에 일정 시간 이하일시 모습을 바꿔야 하기 때문에 시간을 ms단위로 넣음
+					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks());  //키다운에 따른 텍스쳐 변경
+					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, Stime);         //키다운에 따른 오리 텍스쳐 변경 & 일정시간 후 기본 모습 변화
 				}
 
 				//프레임 제한용 변수
@@ -176,19 +181,19 @@ int main()
 					gPlayer.mBox.y = 0;//플레이어 위치 초기화
 
 					render(&gDuckTexture[5], gRenderer, 80, 80);
-					
+
 					SDL_Color ScoreColor = { 255,255,255 };
 					char temp[1024];
-					char *leaderboard[120];
+					char* leaderboard[120];
 					fileRead(temp);
-				    int num = refToken(temp, leaderboard);
+					int num = refToken(temp, leaderboard);
 					selectionSort(leaderboard, num);
 					for (int i = 0; i < 5; i++) { //스코어 로드
-						if (!loadFromRenderedText(&gScore[i], gRenderer, gFont, *(leaderboard+i), ScoreColor))
+						if (!loadFromRenderedText(&gScore[i], gRenderer, gFont, *(leaderboard + i), ScoreColor))
 						{
 							printf("스코어를 랜더할 수 없습니다! \n");
 						}
-						
+
 					}
 					for (int i = 0; i < 5; i++)
 					{
@@ -199,8 +204,8 @@ int main()
 					{
 						render(&gScore[i], gRenderer, 300, 75 * (i + 1));
 					}//리더보드 스코어 생성
-					
-					
+
+
 					for (int i = 0; i < 5; i++)
 					{
 						do {
@@ -235,7 +240,7 @@ int main()
 					if (Ctime <= 0) //남은 시간이 0이하일때 패배
 					{
 						printf("타임오버!\n");
-						score /= 2; //진거니까 스코어 타노스
+						score /= 2; //진거니까 스코어를 절반으로 줄임
 						fileInput(score);
 						game_end = true;
 					}
@@ -251,8 +256,8 @@ int main()
 						move(&gDuck[i], &tileSet); //타일셋과 오리의 충돌처리
 						if (checkCollision(gPlayer.mBox, (gDuck + i)->mBox)) //오리랑 플레이어 충돌시 패배
 						{
-							score /= 2; //진거니까 스코어 타노스
-							fileInput(score);
+							score /= 2; //진거니까 스코어를 반으로 줄임 
+							fileInput(score); //스코어 파일을 불러와서 현재 게임의 스코어를 저장함
 							game_end = true;
 						}
 					}
@@ -261,7 +266,7 @@ int main()
 
 					if (checkCollision(gPlayer.mBox, tileSet[733].mBox)) //탈출구 타일과 충돌시 승리
 					{
-						fileInput(score);
+						fileInput(score);//스코어 파일을 불러와서 현재 게임의 스코어를 저장함
 						game_end = true;
 					}
 
@@ -271,7 +276,7 @@ int main()
 					botLeftViewport.y = SCREEN_HEIGHT * 2 / 3;
 					botLeftViewport.w = SCREEN_WIDTH * 2 / 3;
 					botLeftViewport.h = SCREEN_HEIGHT / 3;
-					SDL_RenderSetViewport(gRenderer, &botLeftViewport);
+					SDL_RenderSetViewport(gRenderer, &botLeftViewport); //왼쪽 아래 부분을 뷰포트로 지정함
 
 					SDL_RenderCopy(gRenderer, gLetterbox, NULL, NULL);
 
@@ -286,15 +291,14 @@ int main()
 					}
 					render(&gCurrentText, gRenderer, 30, 60);
 
-					SDL_Rect botRightViewport; //미니맵 뷰포트 (구현중)
+					SDL_Rect botRightViewport; //미니맵 뷰포트
 					botRightViewport.x = SCREEN_WIDTH * 2 / 3;
 					botRightViewport.y = SCREEN_HEIGHT * 2 / 3;
 					botRightViewport.w = SCREEN_WIDTH / 3;
 					botRightViewport.h = SCREEN_HEIGHT / 3;
-					SDL_RenderSetViewport(gRenderer, &botRightViewport);
+					SDL_RenderSetViewport(gRenderer, &botRightViewport); //오른쪽 아래 부분을 뷰포트로 지정함
 
 					SDL_RenderCopy(gRenderer, gMinimap, NULL, NULL);
-					//벽.png 길.png 두개만 만들고 타일넘버에 따라서 구분뒤에 1/3크기로 랜더링 하면 될듯 차피 tileSet 배열 있으니까
 
 
 					SDL_Rect topViewport; //메인 게임 뷰포트
@@ -306,21 +310,21 @@ int main()
 
 					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-
+					//타일 랜더링
 					for (int i = 0; i < TOTAL_TILES; ++i)
 					{
-						if (checkCollision(Camera, (tileSet + i)->mBox))
+						if (checkCollision(Camera, (tileSet + i)->mBox)) //카메라와 타일이 충돌하는지 검사해서
 						{
 							render(&gTileTexture[(tileSet + i)->mType], gRenderer, (tileSet + i)->mBox.x - Camera.x, (tileSet + i)->mBox.y - Camera.y);
 						} //카메라 안쪽에 들어오는 타일들만 랜더링함
 					}
 
-					//!!!랜더링 순서 중요함!!! 
+					//!!!랜더링 순서 중요함!!! 캐릭터, 오리, 시야 가리기 랜더링 
 					for (int i = 0; i < 5; i++)
 						render(&gCurrentDuck, gRenderer, gDuck[i].mBox.x - Camera.x, gDuck[i].mBox.y - Camera.y); //오리 무브
 					render(&gCurrentSurface, gRenderer, gPlayer.mBox.x - Camera.x, gPlayer.mBox.y - Camera.y); //플레이어 무브
 					render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1350 - Camera.x, gPlayer.mBox.y - 670 - Camera.y);  //사이트 리미터(플레이어랑 같이 움직임) 플레이어 기본위치를 빼주어야 정확히 가운데에 위치
-					
+
 
 					SDL_RenderPresent(gRenderer);  //랜더링 된걸 모두 업데이트 
 					++countedFrames; //프레임 제어용
@@ -333,7 +337,6 @@ int main()
 				}//초당 60프레임 이상 랜더 방지
 			}
 		}
-		
 	}
 	close();
 	return 0;

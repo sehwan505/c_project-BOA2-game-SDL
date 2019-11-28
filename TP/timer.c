@@ -5,6 +5,15 @@
 #include <SDL.h>  
 #include "timer.h"
 
+/*
+timer.c
+fps 제어용 타이머 관련 함수
+-타이머 시작
+-타이머 종료
+-타이머 일시정지
+-타이머 일시정지 해제
+-현재시각
+*/
 void timer_start(_LTimer* timer)
 {
 	timer->mStarted = true;
