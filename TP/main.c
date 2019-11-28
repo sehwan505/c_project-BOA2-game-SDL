@@ -8,44 +8,44 @@
 #include "game.h"
 #include "timer.h"
 
-SDL_Renderer* gRenderer = NULL;     //ëœë”ëŸ¬ í¬ì¸í„°
-SDL_Surface* loadSurface(char* path); //ê²½ë¡œì— ìˆëŠ” ì„œí”¼ìŠ¤ ë¡œë“œ í•¨ìˆ˜
-SDL_Texture* loadTexture(char* path); //ìœ„ì™€ ê°™ì€ ê¸°ëŠ¥ ( ì„œí”¼ìŠ¤ë³´ë‹¤ ì„±ëŠ¥ ì¢‹ìŒ)
-SDL_Window* gWindow = NULL; //ëœë”ë§ ìœˆë„ìš° í¬ì¸í„°
-SDL_Surface* gScreenSurface = NULL; //ìŠ¤í¬ë¦°ì„œí”¼ìŠ¤ í¬ì¸í„°
-SDL_Texture* gTexture = NULL;       //ê¸°ë³¸ í…ìŠ¤ì³ í¬ì¸í„°
-SDL_Texture* gLetterbox = NULL;     //ì™¼ìª½ì•„ë˜ ë©”ì‹œì§€ë°•ìŠ¤ í¬ì¸í„°
-SDL_Texture* gMinimap = NULL;       //ì˜¤ë¥¸ìª½ ì•„ë˜ ë¯¸ë‹ˆë§µ í¬ì¸í„°
-TTF_Font* gFont = NULL;  //ê¸°ë³¸ í°íŠ¸ í¬ì¸í„°
+SDL_Renderer* gRenderer = NULL;     //·£´õ·¯ Æ÷ÀÎÅÍ
+SDL_Surface* loadSurface(char* path); //°æ·Î¿¡ ÀÖ´Â ¼­ÇÇ½º ·Îµå ÇÔ¼ö
+SDL_Texture* loadTexture(char* path); //À§¿Í °°Àº ±â´É ( ¼­ÇÇ½ºº¸´Ù ¼º´É ÁÁÀ½)
+SDL_Window* gWindow = NULL; //·£´õ¸µ À©µµ¿ì Æ÷ÀÎÅÍ
+SDL_Surface* gScreenSurface = NULL; //½ºÅ©¸°¼­ÇÇ½º Æ÷ÀÎÅÍ
+SDL_Texture* gTexture = NULL;       //±âº» ÅØ½ºÃÄ Æ÷ÀÎÅÍ
+SDL_Texture* gLetterbox = NULL;     //¿ŞÂÊ¾Æ·¡ ¸Ş½ÃÁö¹Ú½º Æ÷ÀÎÅÍ
+SDL_Texture* gMinimap = NULL;       //¿À¸¥ÂÊ ¾Æ·¡ ¹Ì´Ï¸Ê Æ÷ÀÎÅÍ
+TTF_Font* gFont = NULL;  //±âº» ÆùÆ® Æ÷ÀÎÅÍ
 
-const int LEVEL_WIDTH = 2560;  //ë ˆë²¨ì¸µ ê°€ë¡œ
-const int LEVEL_HEIGHT = 1920; //ë ˆë²¨ì¸µ ì„¸ë¡œ
+const int LEVEL_WIDTH = 2560;  //·¹º§Ãş °¡·Î
+const int LEVEL_HEIGHT = 1920; //·¹º§Ãş ¼¼·Î
 
-const int SCREEN_WIDTH = 1280; //ìŠ¤í¬ë¦° ê°€ë¡œ
-const int SCREEN_HEIGHT = 720; //ìŠ¤í¬ë¦° ì„¸ë¡œ
+const int SCREEN_WIDTH = 1280; //½ºÅ©¸° °¡·Î
+const int SCREEN_HEIGHT = 720; //½ºÅ©¸° ¼¼·Î
 
-const int SCREEN_FPS = 60;     //ìŠ¤í¬ë¦° í”„ë ˆì„
-const int SCREEN_TICK_PER_FRAME = 17; //í‹±ë‹¹ í”„ë ˆì„
+const int SCREEN_FPS = 60;     //½ºÅ©¸° ÇÁ·¹ÀÓ
+const int SCREEN_TICK_PER_FRAME = 17; //Æ½´ç ÇÁ·¹ÀÓ
 
-//íƒ€ì¼ ìƒìˆ˜
-const int TILE_WIDTH = 80;          //íƒ€ì¼ ê°€ë¡œí¬ê¸°
-const int TILE_HEIGHT = 80;         //íƒ€ì¼ ì„¸ë¡œí¬ê¸°
-const int TOTAL_TILES = 768;        //ì´ íƒ€ì¼ ê°¯ìˆ˜ (32x24)
-const int TOTAL_TILE_SPRITES = 23;  //ì´ íƒ€ì¼ ìŠ¤í”„ë¼ì´íŠ¸ ê°¯ìˆ˜
+//Å¸ÀÏ »ó¼ö
+const int TILE_WIDTH = 80;          //Å¸ÀÏ °¡·ÎÅ©±â
+const int TILE_HEIGHT = 80;         //Å¸ÀÏ ¼¼·ÎÅ©±â
+const int TOTAL_TILES = 768;        //ÃÑ Å¸ÀÏ °¹¼ö (32x24)
+const int TOTAL_TILE_SPRITES = 23;  //ÃÑ Å¸ÀÏ ½ºÇÁ¶óÀÌÆ® °¹¼ö
 
-//í…ìŠ¤ì³ ë“± êµ¬í˜„í•  êµ¬ì¡°ì²´ë“¤ ì •ì˜
-struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL+2]; //ë©”ì¸ìºë¦­í„° í…ìŠ¤ì³
-struct _LTexture gCurrentSurface; //í˜„ì¬ í‘œì‹œë˜ëŠ” ì„œí”¼ìŠ¤
-struct _LTexture gDuckTexture[KEY_PRESS_SURFACE_TOTAL+2];  //ì˜¤ë¦¬ í…ìŠ¤ì²˜
+//ÅØ½ºÃÄ µî ±¸ÇöÇÒ ±¸Á¶Ã¼µé Á¤ÀÇ
+struct _LTexture gMainplayerTexture[KEY_PRESS_SURFACE_TOTAL+2]; //¸ŞÀÎÄ³¸¯ÅÍ ÅØ½ºÃÄ
+struct _LTexture gCurrentSurface; //ÇöÀç Ç¥½ÃµÇ´Â ¼­ÇÇ½º
+struct _LTexture gDuckTexture[KEY_PRESS_SURFACE_TOTAL+2];  //¿À¸® ÅØ½ºÃ³
 struct _LTexture gCurrentDuck;
 
 struct _LTexture gTimeText;
 struct _LTexture gCurrentTime;
-struct _LTexture gSightLimiter;    //ì‹œì•¼ ê°€ë¦¬ê¸°
-struct _LTexture gTextTexture[2];  //íƒìŠ¤íŠ¸ë„ êµ¬ì¡°ì²´ ë°°ì—´ì„ í†µí•˜ì—¬ ë¯¸ë¦¬ ì§‘ì–´ë„£ì–´ë†“ê³ , ì´ë²¤íŠ¸ì— ë”°ë¼ì„œ êº¼ë‚´ì–´ ëœë”ë§ í•  ìˆ˜ ìˆë‹¤
-struct _LTexture gCurrentText;     //í˜„ì¬ í‘œì‹œë˜ëŠ” í…ìŠ¤íŠ¸
+struct _LTexture gSightLimiter;    //½Ã¾ß °¡¸®±â
+struct _LTexture gTextTexture[2];  //ÅÃ½ºÆ®µµ ±¸Á¶Ã¼ ¹è¿­À» ÅëÇÏ¿© ¹Ì¸® Áı¾î³Ö¾î³õ°í, ÀÌº¥Æ®¿¡ µû¶ó¼­ ²¨³»¾î ·£´õ¸µ ÇÒ ¼ö ÀÖ´Ù
+struct _LTexture gCurrentText;     //ÇöÀç Ç¥½ÃµÇ´Â ÅØ½ºÆ®
 
-struct _LTexture gTileTexture[23]; //íƒ€ì¼ì…‹ í…ìŠ¤ì²˜
+struct _LTexture gTileTexture[23]; //Å¸ÀÏ¼Â ÅØ½ºÃ³
 struct _LTexture gLeaderBoard[5];
 struct _LTexture gScore[5];
 struct _LTexture gStartText;
@@ -59,50 +59,50 @@ struct _LTimer timer;
 int main()
 {
 	srand(time(NULL));
-	//SDL ëª¨ë“ˆ ì´ˆê¸°í™”
+	//SDL ¸ğµâ ÃÊ±âÈ­
 	if (!init())
 	{
-		printf("ì´ˆê¸°í™” ì‹¤íŒ¨!\n");
+		printf("ÃÊ±âÈ­ ½ÇÆĞ!\n");
 	}
 	else
 	{
 		char time[150];
 		_LTile tileSet[12000] = { 0, };
-		//ë¯¸ë””ì–´ ë¡œë“œ
+		//¹Ìµğ¾î ·Îµå
 		if (!loadMedia(tileSet))
 		{
 			printf("Failed to load media!\n");
 		}
 		else
 		{
-			//ë©”ì¸ë£¨í”„ í”Œë˜ê·¸
-			bool quit = false;     //SDL WINDOW íƒˆì¶œ í”Œë˜ê·¸
-			bool game_end = false; //ë©”ì¸ ê²Œì„ íƒˆì¶œ í”Œë˜ê·¸
+			//¸ŞÀÎ·çÇÁ ÇÃ·¡±×
+			bool quit = false;     //SDL WINDOW Å»Ãâ ÇÃ·¡±×
+			bool game_end = false; //¸ŞÀÎ °ÔÀÓ Å»Ãâ ÇÃ·¡±×
 
-			//ìŠ¤ì½”ì–´ ë³€ìˆ˜
+			//½ºÄÚ¾î º¯¼ö
 			int score = 0;
 
-			//ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
+			//ÀÌº¥Æ® ÇÚµé·¯
 			SDL_Event e;
 
-			//ì¹´ë©”ë¼ êµ¬ì¡°ì²´ ì„ ì–¸
+			//Ä«¸Ş¶ó ±¸Á¶Ã¼ ¼±¾ğ
 			SDL_Rect Camera;
 			Camera.x = 0;
 			Camera.y = 0;
 			Camera.w = SCREEN_WIDTH;
-			Camera.h = SCREEN_HEIGHT * 2 / 3;  //ìœ—ìª½ ë·°í¬íŠ¸ê°€ ì„¸ë¡œì˜ 2/3 ì§€ì ì´ê¸° ë•Œë¬¸ì— ì¹´ë©”ë¼ ë†’ì´ë¥¼ ì„¸ë¡œì˜ 2/3ìœ¼ë¡œ ì„¤ì •
+			Camera.h = SCREEN_HEIGHT * 2 / 3;  //À­ÂÊ ºäÆ÷Æ®°¡ ¼¼·ÎÀÇ 2/3 ÁöÁ¡ÀÌ±â ¶§¹®¿¡ Ä«¸Ş¶ó ³ôÀÌ¸¦ ¼¼·ÎÀÇ 2/3À¸·Î ¼³Á¤
 
-			//ê¸°ë³¸ í‚¤ ì„¤ì • ì„œí”¼ìŠ¤
+			//±âº» Å° ¼³Á¤ ¼­ÇÇ½º
 			gCurrentSurface.mTexture = gMainplayerTexture[KEY_PRESS_SURFACE_DEFAULT].mTexture;
 			gCurrentSurface.mHeight = gMainplayerTexture[KEY_PRESS_SURFACE_DEFAULT].mHeight;
 			gCurrentSurface.mWidth = gMainplayerTexture[KEY_PRESS_SURFACE_DEFAULT].mWidth;
 
-			//ê¸°ë³¸ í…ìŠ¤íŠ¸ ì„¤ì •
+			//±âº» ÅØ½ºÆ® ¼³Á¤
 			gCurrentText.mTexture = gTextTexture[0].mTexture;
 			gCurrentText.mHeight = gTextTexture[0].mHeight;
 			gCurrentText.mWidth = gTextTexture[0].mWidth;
 
-			//ê¸°ë³¸ ì˜¤ë¦¬ ìœ„ì¹˜ ì„¤ì •
+			//±âº» ¿À¸® À§Ä¡ ¼³Á¤
 			for (int i = 0; i < 5; i++)
 			{
 				do {
@@ -110,29 +110,29 @@ int main()
 					int ranY = rand() % LEVEL_HEIGHT;
 					gDuck[i].mBox.x = ranX;
 					gDuck[i].mBox.y = ranY;
-				} while (touchesWall(gDuck[i].mBox, tileSet));//ëœë¤ ìƒì„±ëœ ìœ„ì¹˜ê°€ ë²½ì¼ìˆ˜ë„ ìˆìœ¼ë‹ˆ ì˜ˆì™¸ì²˜ë¦¬
+				} while (touchesWall(gDuck[i].mBox, tileSet));//·£´ı »ı¼ºµÈ À§Ä¡°¡ º®ÀÏ¼öµµ ÀÖÀ¸´Ï ¿¹¿ÜÃ³¸®
 			}
 
-			//fpsì œì–´ìš© & ê²Œì„íƒ€ì´ë¨¸ìš© íƒ€ì´ë¨¸ êµ¬ì¡°ì²´ ì„ ì–¸
+			//fpsÁ¦¾î¿ë & °ÔÀÓÅ¸ÀÌ¸Ó¿ë Å¸ÀÌ¸Ó ±¸Á¶Ã¼ ¼±¾ğ
 			struct _LTimer fpsTimer;
 			struct _LTimer capTimer;
 			int  countedFrames = 0;
 			timer_start(&fpsTimer);
 			int Stime = SDL_GetTicks() / 1000;
 
-			//ë©”ì¸ë£¨í”„ 
+			//¸ŞÀÎ·çÇÁ 
 			while (!quit)
 			{
 				timer_start(&capTimer);
-				//ì´ë²¤íŠ¸ ì²˜ë¦¬
+				//ÀÌº¥Æ® Ã³¸®
 				while (SDL_PollEvent(&e) != 0)
 				{
-					//ì¢…ë£Œ í˜¸ì¶œì‹œ ì¢…ë£Œ
+					//Á¾·á È£Ãâ½Ã Á¾·á
 					if (e.type == SDL_QUIT)
 					{
 						quit = true;
 					}
-					else if (e.type == SDL_KEYDOWN) //í‚¤ë‹¤ìš´ ì´ë²¤íŠ¸ ì²˜ë¦¬
+					else if (e.type == SDL_KEYDOWN) //Å°´Ù¿î ÀÌº¥Æ® Ã³¸®
 					{
 						switch (e.key.keysym.sym)
 						{
@@ -150,30 +150,30 @@ int main()
 						}
 					}
 
-					V_handleEvent(&gPlayer, &e); //í‚¤ë‹¤ìš´ì— ë”°ë¥¸ ì´ë™ ì´ë²¤íŠ¸
+					V_handleEvent(&gPlayer, &e); //Å°´Ù¿î¿¡ µû¸¥ ÀÌµ¿ ÀÌº¥Æ®
 					for (int i = 0; i < 5; i++)
-						reverse_V_handleEvent(&gDuck[i], &e); //í‚¤ë‹¤ìš´ì— ë”°ë¥¸ ì˜¤ë¦¬ ì´ë™ ì´ë²¤íŠ¸
-					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks() / 250);  //í‚¤ë‹¤ìš´ì— ë”°ë¥¸ í…ìŠ¤ì³ ë³€ê²½
-					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, SDL_GetTicks());         //ì˜¤ë¦¬ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì™¸ì— ì¼ì • ì‹œê°„ ì´í•˜ì¼ì‹œ ëª¨ìŠµì„ ë°”ê¿”ì•¼ í•˜ê¸° ë•Œë¬¸ì— ì‹œê°„ì„ msë‹¨ìœ„ë¡œ ë„£ìŒ
+						reverse_V_handleEvent(&gDuck[i], &e); //Å°´Ù¿î¿¡ µû¸¥ ¿À¸® ÀÌµ¿ ÀÌº¥Æ®
+					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks() / 250);  //Å°´Ù¿î¿¡ µû¸¥ ÅØ½ºÃÄ º¯°æ
+					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, SDL_GetTicks());         //¿À¸®´Â ¾Ö´Ï¸ŞÀÌ¼Ç ¿Ü¿¡ ÀÏÁ¤ ½Ã°£ ÀÌÇÏÀÏ½Ã ¸ğ½ÀÀ» ¹Ù²ã¾ß ÇÏ±â ¶§¹®¿¡ ½Ã°£À» ms´ÜÀ§·Î ³ÖÀ½
 				}
 
-				//í”„ë ˆì„ ì œí•œìš© ë³€ìˆ˜
+				//ÇÁ·¹ÀÓ Á¦ÇÑ¿ë º¯¼ö
 				float avgFPS = countedFrames / (getTicks(&fpsTimer) / (float)1000);
 				if (avgFPS > 2000000)
 				{
 					avgFPS = 0;
 				}
 
-				//ë¦¬ë”ë³´ë“œ ë£¨í”„
+				//¸®´õº¸µå ·çÇÁ
 				if (game_end)
 				{
 					SDL_RenderClear(gRenderer);
-					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF); //ëœë”ëŸ¬ ìƒ‰ì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ì„¤ì •
+					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF); //·£´õ·¯ »öÀ» °ËÀº»öÀ¸·Î ¼³Á¤
 
-					score = 0; //ìŠ¤ì½”ì–´ ë³€ìˆ˜ ì´ˆê¸°í™”
+					score = 0; //½ºÄÚ¾î º¯¼ö ÃÊ±âÈ­
 
 					gPlayer.mBox.x = 0;
-					gPlayer.mBox.y = 0;//í”Œë ˆì´ì–´ ìœ„ì¹˜ ì´ˆê¸°í™”
+					gPlayer.mBox.y = 0;//ÇÃ·¹ÀÌ¾î À§Ä¡ ÃÊ±âÈ­
 
 					render(&gDuckTexture[5], gRenderer, 80, 80);
 					
@@ -183,27 +183,22 @@ int main()
 					fileRead(temp);
 				    int num = refToken(temp, leaderboard);
 					selectionSort(leaderboard, num);
-
-					for (int i = 0; i < 5; i++) { //ìŠ¤ì½”ì–´ ë¡œë“œ
+					for (int i = 0; i < 5; i++) { //½ºÄÚ¾î ·Îµå
 						if (!loadFromRenderedText(&gScore[i], gRenderer, gFont, *(leaderboard+i), ScoreColor))
 						{
-							printf("ìŠ¤ì½”ì–´ë¥¼ ëœë”í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤! \n");
-						}
-						if (SDL_GetTicks() / 1000 == 20)
-						{
-							printf("%s \n", leaderboard[i]);
+							printf("½ºÄÚ¾î¸¦ ·£´õÇÒ ¼ö ¾ø½À´Ï´Ù! \n");
 						}
 						
 					}
 					for (int i = 0; i < 5; i++)
 					{
 						render(&gLeaderBoard[i], gRenderer, 240, 75 * (i + 1));
-					}//ë¦¬ë”ë³´ë“œ ê¸€ì ìƒì„±
+					}//¸®´õº¸µå ±ÛÀÚ »ı¼º
 
 					for (int i = 0; i < 5; i++)
 					{
 						render(&gScore[i], gRenderer, 300, 75 * (i + 1));
-					}//ë¦¬ë”ë³´ë“œ ìŠ¤ì½”ì–´ ìƒì„±
+					}//¸®´õº¸µå ½ºÄÚ¾î »ı¼º
 					
 					
 					for (int i = 0; i < 5; i++)
@@ -212,66 +207,66 @@ int main()
 							int ranX = rand() % LEVEL_WIDTH;
 							int ranY = rand() % LEVEL_HEIGHT;
 							gDuck[i].mBox.x = ranX;
-							gDuck[i].mBox.y = ranY; //ì˜¤ë¦¬ìœ„ì¹˜ ëœë¤ ìƒì„±
-						} while (touchesWall(gDuck[i].mBox, tileSet)); //ëœë¤ ìƒì„±ëœ ìœ„ì¹˜ê°€ ë²½ì¼ìˆ˜ë„ ìˆìœ¼ë‹ˆ ì˜ˆì™¸ì²˜ë¦¬
+							gDuck[i].mBox.y = ranY; //¿À¸®À§Ä¡ ·£´ı »ı¼º
+						} while (touchesWall(gDuck[i].mBox, tileSet)); //·£´ı »ı¼ºµÈ À§Ä¡°¡ º®ÀÏ¼öµµ ÀÖÀ¸´Ï ¿¹¿ÜÃ³¸®
 
-					}//ì˜¤ë¦¬ìœ„ì¹˜&ì†ë„ ì¬ì„¤ì •
+					}//¿À¸®À§Ä¡&¼Óµµ Àç¼³Á¤
 
 					render(&gStartText, gRenderer, 250, 420);
 					SDL_RenderPresent(gRenderer);
 
-					//ìŠ¤ì½”ì–´ ê³„ì‚°&ë‚¨ì€ì‹œê°„ ê³„ì‚°ì„ ìœ„í•´ ê²Œì„ì„ ì‹œì‘í•˜ëŠ” ìˆœê°„ì˜ ì‹œê°„ì„ ì €ì¥í•´ë‘ 
+					//½ºÄÚ¾î °è»ê&³²Àº½Ã°£ °è»êÀ» À§ÇØ °ÔÀÓÀ» ½ÃÀÛÇÏ´Â ¼ø°£ÀÇ ½Ã°£À» ÀúÀåÇØµÒ
 					Stime = SDL_GetTicks() / 1000;
 				}
 				else
 				{
 
-					//ì‹œê°„ í‘œì‹œë¥¼ ìœ„í•œ ë³€ìˆ˜ ì„¤ì •
+					//½Ã°£ Ç¥½Ã¸¦ À§ÇÑ º¯¼ö ¼³Á¤
 					SDL_Color timeColor = { 255,255,255 };
 					int Ctime = 60 - (SDL_GetTicks() / 1000 - Stime);
 					sprintf(time, "%d", Ctime);
 
-					score = (SDL_GetTicks() - Stime * 1000); //ì‹œê°„(ms)ê°€ ê³§ ìŠ¤ì½”ì–´ê°€ ë¨
+					score = 22222 + (SDL_GetTicks() - Stime * 1000); //½Ã°£(ms)¿¡ 22222 ´õÇÑ °ªÀÌ ½ºÄÚ¾î°¡ µÊ
 
 					if (!loadFromRenderedText(&gCurrentTime, gRenderer, gFont, time, timeColor))
 					{
-						printf("ë©”ì¸ íƒ€ì´ë¨¸ë¥¼ ëœë”í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤! \n");
+						printf("¸ŞÀÎ Å¸ÀÌ¸Ó¸¦ ·£´õÇÒ ¼ö ¾ø½À´Ï´Ù! \n");
 					}
-					if (Ctime <= 0) //ë‚¨ì€ ì‹œê°„ì´ 0ì´í•˜ì¼ë•Œ íŒ¨ë°°
+					if (Ctime <= 0) //³²Àº ½Ã°£ÀÌ 0ÀÌÇÏÀÏ¶§ ÆĞ¹è
 					{
-						printf("íƒ€ì„ì˜¤ë²„!\n");
-						score /= 2; //ì§„ê±°ë‹ˆê¹Œ ìŠ¤ì½”ì–´ íƒ€ë…¸ìŠ¤
+						printf("Å¸ÀÓ¿À¹ö!\n");
+						score /= 2; //Áø°Å´Ï±î ½ºÄÚ¾î Å¸³ë½º
 						fileInput(score);
 						game_end = true;
 					}
 
-					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF); //ëœë”ëŸ¬ ìƒ‰ì„ ê²€ì€ìƒ‰ìœ¼ë¡œ ì„¤ì •
+					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF); //·£´õ·¯ »öÀ» °ËÀº»öÀ¸·Î ¼³Á¤
 					SDL_RenderClear(gRenderer);
-					//ê²€ì€í™”ë©´ ëœë”ëŸ¬ ì„¤ì • í›„ ëœë”ëŸ¬ í´ë¦¬ì–´
+					//°ËÀºÈ­¸é ·£´õ·¯ ¼³Á¤ ÈÄ ·£´õ·¯ Å¬¸®¾î
 
-					//ìºë¦­í„° ì´ë™ & ì¹´ë©”ë¼ ì…‹íŒ…
-					move(&gPlayer, &tileSet); //íƒ€ì¼ì…‹ê³¼ í”Œë ˆì´ì–´ì˜ ì¶©ëŒì²˜ë¦¬
+					//Ä³¸¯ÅÍ ÀÌµ¿ & Ä«¸Ş¶ó ¼ÂÆÃ
+					move(&gPlayer, &tileSet); //Å¸ÀÏ¼Â°ú ÇÃ·¹ÀÌ¾îÀÇ Ãæµ¹Ã³¸®
 					for (int i = 0; i < 5; i++)
 					{
-						move(&gDuck[i], &tileSet); //íƒ€ì¼ì…‹ê³¼ ì˜¤ë¦¬ì˜ ì¶©ëŒì²˜ë¦¬
-						if (checkCollision(gPlayer.mBox, (gDuck + i)->mBox)) //ì˜¤ë¦¬ë‘ í”Œë ˆì´ì–´ ì¶©ëŒì‹œ íŒ¨ë°°
+						move(&gDuck[i], &tileSet); //Å¸ÀÏ¼Â°ú ¿À¸®ÀÇ Ãæµ¹Ã³¸®
+						if (checkCollision(gPlayer.mBox, (gDuck + i)->mBox)) //¿À¸®¶û ÇÃ·¹ÀÌ¾î Ãæµ¹½Ã ÆĞ¹è
 						{
-							score /= 2; //ì§„ê±°ë‹ˆê¹Œ ìŠ¤ì½”ì–´ íƒ€ë…¸ìŠ¤
+							score /= 2; //Áø°Å´Ï±î ½ºÄÚ¾î Å¸³ë½º
 							fileInput(score);
 							game_end = true;
 						}
 					}
-					setCamera(&gPlayer, &Camera); //ì¹´ë©”ë¼ ì…‹íŒ…(ë³´ì—¬ì§€ëŠ” ë¶€ë¶„ ì„¤ì •)
+					setCamera(&gPlayer, &Camera); //Ä«¸Ş¶ó ¼ÂÆÃ(º¸¿©Áö´Â ºÎºĞ ¼³Á¤)
 
 
-					if (checkCollision(gPlayer.mBox, tileSet[733].mBox)) //íƒˆì¶œêµ¬ íƒ€ì¼ê³¼ ì¶©ëŒì‹œ ìŠ¹ë¦¬
+					if (checkCollision(gPlayer.mBox, tileSet[733].mBox)) //Å»Ãâ±¸ Å¸ÀÏ°ú Ãæµ¹½Ã ½Â¸®
 					{
 						fileInput(score);
 						game_end = true;
 					}
 
 
-					SDL_Rect botLeftViewport; //ë¡œê·¸ë°•ìŠ¤ ë·°í¬íŠ¸(ì™¼ìª½ ì•„ë˜)
+					SDL_Rect botLeftViewport; //·Î±×¹Ú½º ºäÆ÷Æ®(¿ŞÂÊ ¾Æ·¡)
 					botLeftViewport.x = 0;
 					botLeftViewport.y = SCREEN_HEIGHT * 2 / 3;
 					botLeftViewport.w = SCREEN_WIDTH * 2 / 3;
@@ -280,18 +275,18 @@ int main()
 
 					SDL_RenderCopy(gRenderer, gLetterbox, NULL, NULL);
 
-					//ëœë”(íƒ€ì´ë¨¸, í…ìŠ¤íŠ¸)
+					//·£´õ(Å¸ÀÌ¸Ó, ÅØ½ºÆ®)
 					render(&gTimeText, gRenderer, 30, 30);
 					render(&gCurrentTime, gRenderer, 130, 30);
-					if (Ctime <= 30) //ë‚¨ì€ì‹œê°„ì´ ì¼ì • ì´í•˜ì¼ë•Œ 
+					if (Ctime <= 30) //³²Àº½Ã°£ÀÌ ÀÏÁ¤ ÀÌÇÏÀÏ¶§ 
 					{
 						gCurrentText.mTexture = gTextTexture[1].mTexture;
 						gCurrentText.mHeight = gTextTexture[1].mHeight;
-						gCurrentText.mWidth = gTextTexture[1].mWidth;//í…ìŠ¤íŠ¸ë¥¼ ë°”ê¿”ì¤Œ
+						gCurrentText.mWidth = gTextTexture[1].mWidth;//ÅØ½ºÆ®¸¦ ¹Ù²ãÁÜ
 					}
 					render(&gCurrentText, gRenderer, 30, 60);
 
-					SDL_Rect botRightViewport; //ë¯¸ë‹ˆë§µ ë·°í¬íŠ¸ (êµ¬í˜„ì¤‘)
+					SDL_Rect botRightViewport; //¹Ì´Ï¸Ê ºäÆ÷Æ® (±¸ÇöÁß)
 					botRightViewport.x = SCREEN_WIDTH * 2 / 3;
 					botRightViewport.y = SCREEN_HEIGHT * 2 / 3;
 					botRightViewport.w = SCREEN_WIDTH / 3;
@@ -299,15 +294,15 @@ int main()
 					SDL_RenderSetViewport(gRenderer, &botRightViewport);
 
 					SDL_RenderCopy(gRenderer, gMinimap, NULL, NULL);
-					//ë²½.png ê¸¸.png ë‘ê°œë§Œ ë§Œë“¤ê³  íƒ€ì¼ë„˜ë²„ì— ë”°ë¼ì„œ êµ¬ë¶„ë’¤ì— 1/3í¬ê¸°ë¡œ ëœë”ë§ í•˜ë©´ ë ë“¯ ì°¨í”¼ tileSet ë°°ì—´ ìˆìœ¼ë‹ˆê¹Œ
+					//º®.png ±æ.png µÎ°³¸¸ ¸¸µé°í Å¸ÀÏ³Ñ¹ö¿¡ µû¶ó¼­ ±¸ºĞµÚ¿¡ 1/3Å©±â·Î ·£´õ¸µ ÇÏ¸é µÉµí Â÷ÇÇ tileSet ¹è¿­ ÀÖÀ¸´Ï±î
 
 
-					SDL_Rect topViewport; //ë©”ì¸ ê²Œì„ ë·°í¬íŠ¸
+					SDL_Rect topViewport; //¸ŞÀÎ °ÔÀÓ ºäÆ÷Æ®
 					topViewport.x = 0;
 					topViewport.y = 0;
 					topViewport.w = SCREEN_WIDTH;
 					topViewport.h = SCREEN_HEIGHT * 2 / 3;
-					SDL_RenderSetViewport(gRenderer, &topViewport); //ìœ„ì—ì„œ ì„¤ì •í•œ ë·°í¬íŠ¸ë¡œ ëœë”ëŸ¬ ì„¤ì •
+					SDL_RenderSetViewport(gRenderer, &topViewport); //À§¿¡¼­ ¼³Á¤ÇÑ ºäÆ÷Æ®·Î ·£´õ·¯ ¼³Á¤
 
 					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -317,25 +312,25 @@ int main()
 						if (checkCollision(Camera, (tileSet + i)->mBox))
 						{
 							render(&gTileTexture[(tileSet + i)->mType], gRenderer, (tileSet + i)->mBox.x - Camera.x, (tileSet + i)->mBox.y - Camera.y);
-						} //ì¹´ë©”ë¼ ì•ˆìª½ì— ë“¤ì–´ì˜¤ëŠ” íƒ€ì¼ë“¤ë§Œ ëœë”ë§í•¨
+						} //Ä«¸Ş¶ó ¾ÈÂÊ¿¡ µé¾î¿À´Â Å¸ÀÏµé¸¸ ·£´õ¸µÇÔ
 					}
 
-					//!!!ëœë”ë§ ìˆœì„œ ì¤‘ìš”í•¨!!! 
+					//!!!·£´õ¸µ ¼ø¼­ Áß¿äÇÔ!!! 
 					for (int i = 0; i < 5; i++)
-						render(&gCurrentDuck, gRenderer, gDuck[i].mBox.x - Camera.x, gDuck[i].mBox.y - Camera.y); //ì˜¤ë¦¬ ë¬´ë¸Œ
-					render(&gCurrentSurface, gRenderer, gPlayer.mBox.x - Camera.x, gPlayer.mBox.y - Camera.y); //í”Œë ˆì´ì–´ ë¬´ë¸Œ
-					render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1350 - Camera.x, gPlayer.mBox.y - 670 - Camera.y);  //ì‚¬ì´íŠ¸ ë¦¬ë¯¸í„°(í”Œë ˆì´ì–´ë‘ ê°™ì´ ì›€ì§ì„) í”Œë ˆì´ì–´ ê¸°ë³¸ìœ„ì¹˜ë¥¼ ë¹¼ì£¼ì–´ì•¼ ì •í™•íˆ ê°€ìš´ë°ì— ìœ„ì¹˜
+						render(&gCurrentDuck, gRenderer, gDuck[i].mBox.x - Camera.x, gDuck[i].mBox.y - Camera.y); //¿À¸® ¹«ºê
+					render(&gCurrentSurface, gRenderer, gPlayer.mBox.x - Camera.x, gPlayer.mBox.y - Camera.y); //ÇÃ·¹ÀÌ¾î ¹«ºê
+					render(&gSightLimiter, gRenderer, gPlayer.mBox.x - 1350 - Camera.x, gPlayer.mBox.y - 670 - Camera.y);  //»çÀÌÆ® ¸®¹ÌÅÍ(ÇÃ·¹ÀÌ¾î¶û °°ÀÌ ¿òÁ÷ÀÓ) ÇÃ·¹ÀÌ¾î ±âº»À§Ä¡¸¦ »©ÁÖ¾î¾ß Á¤È®È÷ °¡¿îµ¥¿¡ À§Ä¡
 					
 
-					SDL_RenderPresent(gRenderer);  //ëœë”ë§ ëœê±¸ ëª¨ë‘ ì—…ë°ì´íŠ¸ 
-					++countedFrames; //í”„ë ˆì„ ì œì–´ìš©
+					SDL_RenderPresent(gRenderer);  //·£´õ¸µ µÈ°É ¸ğµÎ ¾÷µ¥ÀÌÆ® 
+					++countedFrames; //ÇÁ·¹ÀÓ Á¦¾î¿ë
 				}
 
 				int frameTicks = getTicks(&capTimer);
 				if (frameTicks < SCREEN_TICK_PER_FRAME)
 				{
 					SDL_Delay(SCREEN_TICK_PER_FRAME - frameTicks);
-				}//ì´ˆë‹¹ 60í”„ë ˆì„ ì´ìƒ ëœë” ë°©ì§€
+				}//ÃÊ´ç 60ÇÁ·¹ÀÓ ÀÌ»ó ·£´õ ¹æÁö
 			}
 		}
 		
@@ -343,6 +338,5 @@ int main()
 	close();
 	return 0;
 }
-
 
 
