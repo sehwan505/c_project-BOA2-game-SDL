@@ -7,24 +7,33 @@
 #include <stdint.h>               //use uint32_t
 #include "game.h"
 
+/*
+game.c
+게임에서 필요한 기본적인 함수들
+-텍스처 이벤트
+-충돌처리
+-타일셋팅
+-벽과의 충돌처리
+*/
+
 void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time) //텍스쳐 핸들링
 {
-	if (e->type == SDL_KEYDOWN)
+	if (e->type == SDL_KEYDOWN) //키다운시 
 	{
 		switch (e->key.keysym.sym)
 		{
-		case SDLK_UP:
-			CT->mTexture = (LT + KEY_PRESS_SURFACE_UP)->mTexture;
+		case SDLK_UP://윗쪽 화살표입력시 텍스쳐 지정
+			CT->mTexture = (LT + KEY_PRESS_SURFACE_UP)->mTexture; 
 			CT->mWidth = (LT + KEY_PRESS_SURFACE_UP)->mWidth;
 			CT->mHeight = (LT + KEY_PRESS_SURFACE_UP)->mHeight;
 			break;
-		case SDLK_DOWN:
+		case SDLK_DOWN://아래쪽 화살표입력시 텍스쳐 지정
 			CT->mHeight = (LT + KEY_PRESS_SURFACE_DOWN)->mHeight;
 			CT->mWidth = (LT + KEY_PRESS_SURFACE_DOWN)->mWidth;
 			CT->mTexture = (LT + KEY_PRESS_SURFACE_DOWN)->mTexture;
 			break;
-		case SDLK_LEFT:
-			if (time % 2 == 0)
+		case SDLK_LEFT://왼쪽 화살표입력시 텍스쳐 지정
+			if (time % 2 == 0) //애니메이션 효과를 위해 입력받은 time이 2의 배수일경우와 아닌경우로 나눠서 지정
 			{
 				CT->mHeight = (LT + KEY_PRESS_SURFACE_LEFT)->mHeight;
 				CT->mTexture = (LT + KEY_PRESS_SURFACE_LEFT)->mTexture;
@@ -37,8 +46,8 @@ void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time) //텍스쳐
 				CT->mWidth = (LT + 6)->mWidth;
 			}
 			break;
-		case SDLK_RIGHT:
-			if (time % 2 == 0)
+		case SDLK_RIGHT: //오른쪽 화살표입력시 텍스쳐 지정
+			if (time % 2 == 0) //애니메이션 효과를 위해 입력받은 time이 2의 배수일경우와 아닌경우로 나눠서 지정
 			{
 				CT->mHeight = (LT + KEY_PRESS_SURFACE_RIGHT)->mHeight;
 				CT->mTexture = (LT + KEY_PRESS_SURFACE_RIGHT)->mTexture;
@@ -51,12 +60,7 @@ void T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e,int time) //텍스쳐
 				CT->mWidth = (LT + 7)->mWidth;
 			}
 			break;
-		case SDLK_o:
-			CT->mHeight = (LT + KEY_PRESS_SURFACE_O)->mHeight;
-			CT->mWidth = (LT + KEY_PRESS_SURFACE_O)->mWidth;
-			CT->mTexture = (LT + KEY_PRESS_SURFACE_O)->mTexture;
-			break;
-		default:
+		default: //혹시나 다른키 입력시 정면 모습으로 초기화 해줌
 			CT->mHeight = (LT + KEY_PRESS_SURFACE_DEFAULT)->mHeight;
 			CT->mWidth = (LT + KEY_PRESS_SURFACE_DEFAULT)->mWidth;
 			CT->mTexture = (LT + KEY_PRESS_SURFACE_DEFAULT)->mTexture;
@@ -71,8 +75,8 @@ void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
 
 		switch (e->key.keysym.sym)
 		{
-		case SDLK_UP:
-			if ((150 - time / 1000) <= 140)
+		case SDLK_UP://윗쪽 화살표입력시 아래 모습으로 텍스쳐 지정
+			if ((60 - (SDL_GetTicks() / 1000 - time))<=30) //30초 남았을 때 부터 흉폭해져야 하므로 시간을 검사해준다.
 			{
 				CT->mTexture = (LT + KEY_PRESS_SURFACE_O)->mTexture;
 				CT->mWidth = (LT + KEY_PRESS_SURFACE_O)->mWidth;
@@ -85,13 +89,13 @@ void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
 				CT->mHeight = (LT + KEY_PRESS_SURFACE_DOWN)->mHeight;
 			}
 			break;
-		case SDLK_DOWN:
+		case SDLK_DOWN: //아래쪽 화살표입력시 위쪽 모습으로 텍스쳐 지정
 			CT->mHeight = (LT + KEY_PRESS_SURFACE_UP)->mHeight;
 			CT->mWidth = (LT + KEY_PRESS_SURFACE_UP)->mWidth;
 			CT->mTexture = (LT + KEY_PRESS_SURFACE_UP)->mTexture;
 			break;
-		case SDLK_LEFT:
-			if ((time/350) % 2 == 0)
+		case SDLK_LEFT: //왼쪽 화살표입력시 오른쪽 모습으로 텍스쳐 지정
+			if (time % 2 == 0) //애니메이션 효과를 위해 입력받은 time이 2의 배수일경우와 아닌경우로 나눠서 지정
 			{
 				CT->mHeight = (LT + KEY_PRESS_SURFACE_RIGHT)->mHeight;
 				CT->mTexture = (LT + KEY_PRESS_SURFACE_RIGHT)->mTexture;
@@ -104,8 +108,8 @@ void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
 				CT->mWidth = (LT + 7)->mWidth;
 			}
 			break;
-		case SDLK_RIGHT:
-			if ((time/350) % 2 == 0)
+		case SDLK_RIGHT: //오른쪽 화살표입력시 오른쪽 모습으로 텍스쳐 지정
+			if (time % 2 == 0) //애니메이션 효과를 위해 입력받은 time이 2의 배수일경우와 아닌경우로 나눠서 지정
 			{
 				CT->mHeight = (LT + KEY_PRESS_SURFACE_LEFT)->mHeight;
 				CT->mTexture = (LT + KEY_PRESS_SURFACE_LEFT)->mTexture;
@@ -118,12 +122,8 @@ void reverse_T_handleEvent(_LTexture* CT, _LTexture* LT, SDL_Event* e, int time)
 				CT->mWidth = (LT + 6)->mWidth;
 			}
 			break;
-		case SDLK_o:
-			CT->mHeight = (LT + KEY_PRESS_SURFACE_O)->mHeight;
-			CT->mWidth = (LT + KEY_PRESS_SURFACE_O)->mWidth;
-			CT->mTexture = (LT + KEY_PRESS_SURFACE_O)->mTexture;
-			break;
-		default:
+
+		default: //혹시나 다른키 입력시 정면 모습으로 초기화 해줌
 			CT->mHeight = (LT + KEY_PRESS_SURFACE_DEFAULT)->mHeight;
 			CT->mWidth = (LT + KEY_PRESS_SURFACE_DEFAULT)->mWidth;
 			CT->mTexture = (LT + KEY_PRESS_SURFACE_DEFAULT)->mTexture;
@@ -138,7 +138,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) //충돌판정 함수(충돌-> return false)
 	int rightA, rightB;
 	int topA, topB;
 	int botA, botB;
-	//충돌판정 사각형 변수
+	//충돌판정 사각형 변수, 각각 A사각형의 상,하,좌,우 / B사각형의 상,하,좌,우 변수를 생성하여 충돌하는지 검사함
 
 	leftA = a.x;
 	rightA = a.x + a.w;
@@ -165,40 +165,40 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) //충돌판정 함수(충돌-> return false)
 	if (leftA >= rightB)
 	{
 		return false;
-	}
+	} //충돌할 시 false 리턴
 
 	return true;
 }
 bool setTiles(_LTile *tiles) //맵파일 읽어서 타일셋팅
 {
-	bool loaded = true;
-	int x = 0, y = 0, i = 0;
+	bool loaded = true; //정상적으로 셋팅이 끝났는지 검사할 bool 대수 변수
+	int x = 0, y = 0, i = 0; //x좌표,y좌표, 타일셋 핸들링용 변수
 
 	char tempbuf[2500];
 	char* map[2500] = { 0, };
-	FILE *fp = fopen("level.map", "r");
+	FILE *fp = fopen("level.map", "r"); //level.map 오픈해서
 
-	fgets(tempbuf, sizeof(tempbuf), fp);
+	fgets(tempbuf, sizeof(tempbuf), fp); //tempbuf에 저장 
 
-	char *ptr = strtok(tempbuf, " ");
+	char *ptr = strtok(tempbuf, " "); //공백문자 기준으로 잘라서
 
 	while (ptr != NULL)
 	{
-		
 		map[i] = ptr;
 		i++;
 		ptr = strtok(NULL, " ");
-	}
-	if (fp == NULL)
+	} //map 배열에 넣어준다.
+
+	if (fp == NULL) //파일 포인터 예외 처리
 	{
 		printf("맵파일 로드 실패!\n");
 		loaded = false;
 	}
 	else
 	{
-		for (int i = 0; i < 767; i++)
+		for (int i = 0; i < TOTAL_TILES-1; i++)
 		{
-			int tileType = -1;
+			int tileType = -1; //타일 타입 지정용 변수
 			if (!strcmp(map[i], "00"))
 			{
 				tileType = 0;
@@ -314,21 +314,24 @@ bool setTiles(_LTile *tiles) //맵파일 읽어서 타일셋팅
 				tileType = 22;
 				printf("\n set tileType : 22 ");
 			}
+			// map배열에서 각각의 원소와 문자열을 비교하여 무슨 타일인지 지정
 
 			(tiles + i)->mBox.x = x;
 			(tiles + i)->mBox.y = y;
 			(tiles + i)->mBox.w = TILE_WIDTH;
 			(tiles + i)->mBox.h = TILE_HEIGHT;
 			(tiles + i)->mType = tileType;
+			//타일 배열에 타일의 좌표,크기,타입 지정해서 저장
 
 			printf(" tiles[%d] = %d\n", i, (tiles + i)->mType);
-			x += TILE_WIDTH;
 
+			x += TILE_WIDTH;
 			if (x >= LEVEL_WIDTH)
 			{
 				x = 0;
 				y += TILE_HEIGHT;
 			}
+			//타일 좌표 계산
 		}
 	}
 	printf("\n Finish setting tiles successfully");
@@ -339,14 +342,13 @@ bool touchesWall(SDL_Rect box, _LTile* tiles) //벽타일과 충돌하는지 검사
 {
 	for (int i = 0; i < TOTAL_TILES; i++)
 	{
-		if (((tiles + i)->mType >= 6) && ((tiles + i)->mType <= 22))
+		if (((tiles + i)->mType >= 6) && ((tiles + i)->mType <= 22)) // 벽 타일에 대해서(6번~22번 타일)
 		{
-			if (checkCollision(box, (tiles + i)->mBox))
+			if (checkCollision(box, (tiles + i)->mBox)) 
 			{
-				return true;
+				return true; //충돌시 true 리턴
 			}
 		}
-		
 	}
 	return false;
 }
