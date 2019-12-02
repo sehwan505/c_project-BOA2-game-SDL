@@ -405,7 +405,7 @@ bool loadFromFile(_LTexture * LT, SDL_Renderer * Renderer, char* path) //PNG로드
 	}
 	else
 	{
-		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF)); //컬러키 설정(선택한 RGB를 투명으로 만들어버림)
 		newTexture = SDL_CreateTextureFromSurface(Renderer, loadedSurface);
 		if (newTexture == NULL)
 		{

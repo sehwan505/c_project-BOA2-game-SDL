@@ -158,7 +158,7 @@ int main() //main loop
 					V_handleEvent(&gPlayer, &e); //키다운에 따른 이동 이벤트
 					for (int i = 0; i < 5; i++)
 						reverse_V_handleEvent(&gDuck[i], &e); //키다운에 따른 오리 이동 이벤트
-					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks());  //키다운에 따른 텍스쳐 변경
+					T_handleEvent(&gCurrentSurface, &gMainplayerTexture, &e, SDL_GetTicks()/350);  //키다운에 따른 텍스쳐 변경
 					reverse_T_handleEvent(&gCurrentDuck, &gDuckTexture, &e, Stime);         //키다운에 따른 오리 텍스쳐 변경 & 일정시간 후 기본 모습 변화
 				}
 
